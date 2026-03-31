@@ -1,0 +1,4435 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brainergy Tax Platform — EXAT</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+         :root {
+            --bg: #f0f4f8;
+            --surface: #fff;
+            --surface2: #f1f5f9;
+            --surface3: #e8edf3;
+            --border: #dde3ec;
+            --border2: #c8d2de;
+            --primary: #1a56db;
+            --primary-dim: rgba(26, 86, 219, .08);
+            --primary-hover: #1e429f;
+            --accent: #057a55;
+            --accent-dim: rgba(5, 122, 85, .1);
+            --danger: #e02424;
+            --danger-dim: rgba(224, 36, 36, .08);
+            --warn: #c27803;
+            --warn-dim: rgba(194, 120, 3, .1);
+            --text: #1a202c;
+            --text2: #4a5568;
+            --text3: #718096;
+            --sidebar-bg: #1a3a6b;
+            --sidebar-border: rgba(255, 255, 255, .1);
+            --sidebar-text: #c8d9f0;
+            --sidebar-active-bg: rgba(255, 255, 255, .15);
+            --sidebar-hover-bg: rgba(255, 255, 255, .08);
+            --sidebar-w: 220px;
+            --header-h: 56px;
+            --radius: 8px;
+            --radius-lg: 12px;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+        
+        body {
+            font-family: 'IBM Plex Sans Thai', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            font-size: 14px
+        }
+        /* ── SIDEBAR ── */
+        
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            z-index: 10;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, .12)
+        }
+        
+        .sidebar-logo {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--sidebar-border);
+            display: flex;
+            flex-direction: column;
+            gap: 10px
+        }
+        
+        .logo-brainergy {
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+        
+        .logo-brainergy .icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #60a5fa, #818cf8);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 800;
+            color: #fff;
+            font-family: 'IBM Plex Mono', monospace
+        }
+        
+        .logo-brainergy .name {
+            font-size: 15px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: .5px
+        }
+        
+        .logo-exat {
+            background: #fff;
+            border-radius: 6px;
+            padding: 5px 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            width: fit-content
+        }
+        
+        .logo-exat .exat-bar {
+            display: flex;
+            gap: 2px;
+            align-items: center
+        }
+        
+        .logo-exat .bar {
+            width: 4px;
+            border-radius: 2px
+        }
+        
+        .logo-exat .bar1 {
+            height: 12px;
+            background: #0056a8
+        }
+        
+        .logo-exat .bar2 {
+            height: 16px;
+            background: #e5222d
+        }
+        
+        .logo-exat .bar3 {
+            height: 10px;
+            background: #0056a8
+        }
+        
+        .logo-exat .exat-text {
+            font-size: 13px;
+            font-weight: 800;
+            color: #0056a8;
+            letter-spacing: 1.5px
+        }
+        
+        .nav {
+            flex: 1;
+            padding: 12px 0;
+            overflow-y: auto
+        }
+        
+        .nav-group-label {
+            padding: 8px 20px 4px;
+            font-size: 10px;
+            font-weight: 700;
+            color: rgba(200, 217, 240, .5);
+            text-transform: uppercase;
+            letter-spacing: 1px
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 20px;
+            color: var(--sidebar-text);
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: all .18s;
+            font-size: 13.5px;
+            font-weight: 500
+        }
+        
+        .nav-item:hover {
+            background: var(--sidebar-hover-bg);
+            color: #fff
+        }
+        
+        .nav-item.active {
+            background: var(--sidebar-active-bg);
+            color: #fff;
+            border-left-color: #60a5fa
+        }
+        
+        .nav-item .nav-icon {
+            font-size: 15px;
+            width: 18px;
+            text-align: center
+        }
+        
+        .nav-divider {
+            height: 1px;
+            background: var(--sidebar-border);
+            margin: 8px 16px
+        }
+        
+        .nav-sub {
+            padding-left: 16px
+        }
+        
+        .nav-sub .nav-item {
+            padding: 7px 20px 7px 14px;
+            font-size: 13px;
+            border-left: none;
+            border-radius: 0 4px 4px 0;
+            margin-left: 4px;
+            position: relative
+        }
+        
+        .nav-sub .nav-item::before {
+            content: '';
+            position: absolute;
+            left: -4px;
+            top: 50%;
+            width: 8px;
+            height: 1px;
+            background: var(--sidebar-border)
+        }
+        /* ── MAIN ── */
+        
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden
+        }
+        
+        .topbar {
+            height: var(--header-h);
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            gap: 8px;
+            flex-shrink: 0;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .06)
+        }
+        
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text2);
+            font-size: 13px
+        }
+        
+        .breadcrumb .sep {
+            color: var(--border2)
+        }
+        
+        .breadcrumb .current {
+            color: var(--primary);
+            font-weight: 600
+        }
+        
+        .topbar-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+        
+        .avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #0ea5e9, #6366f1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer
+        }
+        /* ── NOTIFICATION BELL ── */
+        
+        .notif-wrap {
+            position: relative
+        }
+        
+        .notif-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            color: var(--text2);
+            transition: background .15s;
+            position: relative
+        }
+        
+        .notif-btn:hover {
+            background: var(--surface2)
+        }
+        
+        .notif-badge {
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            background: var(--danger);
+            color: #fff;
+            border-radius: 50%;
+            width: 15px;
+            height: 15px;
+            font-size: 9px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+        
+        .notif-panel {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            width: 340px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, .14);
+            z-index: 600;
+            display: none;
+            overflow: hidden
+        }
+        
+        .notif-panel.open {
+            display: block;
+            animation: fadeIn .15s ease
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-6px)
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+        
+        .notif-panel-hdr {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f8fafc
+        }
+        
+        .notif-panel-title {
+            font-size: 13px;
+            font-weight: 700
+        }
+        
+        .notif-mark-all {
+            font-size: 11px;
+            color: var(--primary);
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: inherit
+        }
+        
+        .notif-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 11px 16px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background .12s
+        }
+        
+        .notif-item:last-child {
+            border-bottom: none
+        }
+        
+        .notif-item:hover {
+            background: var(--surface2)
+        }
+        
+        .notif-item.unread {
+            background: #fffbeb
+        }
+        
+        .notif-item-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+            margin-top: 1px
+        }
+        
+        .notif-item-icon.warn {
+            background: var(--warn-dim)
+        }
+        
+        .notif-item-icon.danger {
+            background: var(--danger-dim)
+        }
+        
+        .notif-item-icon.info {
+            background: var(--primary-dim)
+        }
+        
+        .notif-item-body {
+            flex: 1
+        }
+        
+        .notif-item-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text)
+        }
+        
+        .notif-item-sub {
+            font-size: 11px;
+            color: var(--text3);
+            margin-top: 2px;
+            line-height: 1.4
+        }
+        
+        .notif-empty {
+            padding: 24px;
+            text-align: center;
+            color: var(--text3);
+            font-size: 13px
+        }
+        /* ── CONTENT ── */
+        
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px
+        }
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 12px
+        }
+        
+        .page-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text)
+        }
+        
+        .page-subtitle {
+            font-size: 12px;
+            color: var(--text3);
+            margin-top: 3px
+        }
+        
+        .page-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 8px
+        }
+        
+        .page-view {
+            display: none
+        }
+        
+        .page-view.active {
+            display: block
+        }
+        /* ── BUTTONS ── */
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            border-radius: var(--radius);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all .15s;
+            font-family: inherit;
+            white-space: nowrap
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: #fff
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-hover)
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border2);
+            color: var(--text2)
+        }
+        
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-dim)
+        }
+        
+        .btn-ghost {
+            background: transparent;
+            color: var(--text2);
+            padding: 6px 10px
+        }
+        
+        .btn-ghost:hover {
+            background: var(--surface2);
+            color: var(--text)
+        }
+        
+        .btn-danger {
+            background: var(--danger-dim);
+            color: var(--danger);
+            border: 1px solid rgba(224, 36, 36, .2)
+        }
+        
+        .btn-danger:hover {
+            background: var(--danger);
+            color: #fff
+        }
+        
+        .btn-danger-solid {
+            background: var(--danger);
+            color: #fff;
+            border: none
+        }
+        
+        .btn-danger-solid:hover {
+            background: #c81d1d
+        }
+        
+        .btn-success {
+            background: var(--accent);
+            color: #fff
+        }
+        
+        .btn-success:hover {
+            background: #046c4e
+        }
+        
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px
+        }
+        
+        .btn-xs {
+            padding: 3px 8px;
+            font-size: 11px;
+            border-radius: 5px
+        }
+        /* ── FORM ── */
+        
+        .input,
+        .select {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 7px 10px;
+            color: var(--text);
+            font-size: 13px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color .15s;
+            width: 100%
+        }
+        
+        .input:focus,
+        .select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 86, 219, .08)
+        }
+        
+        .select {
+            cursor: pointer;
+            appearance: none;
+            padding-right: 28px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center
+        }
+        
+        .input-readonly {
+            background: #f8fafc;
+            color: var(--text2);
+            cursor: default
+        }
+        
+        label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text2)
+        }
+        
+        .form-row {
+            display: flex;
+            flex-direction: column;
+            gap: 6px
+        }
+        
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 10px 14px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .04)
+        }
+        
+        .search-divider {
+            flex: 1;
+            min-width: 20px
+        }
+        /* ── TABLE ── */
+        
+        .table-wrap {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .05)
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse
+        }
+        
+        thead tr {
+            background: #f8fafc
+        }
+        
+        th {
+            padding: 11px 14px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: .6px;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap
+        }
+        
+        td {
+            padding: 11px 14px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            vertical-align: middle
+        }
+        
+        tr:last-child td {
+            border-bottom: none
+        }
+        
+        tbody tr {
+            transition: background .12s
+        }
+        
+        tbody tr:hover {
+            background: #f8faff
+        }
+        
+        .empty-row td {
+            text-align: center;
+            color: var(--text3);
+            padding: 32px;
+            font-size: 13px
+        }
+        /* ── BADGES ── */
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 9px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600
+        }
+        
+        .badge-active {
+            background: var(--accent-dim);
+            color: var(--accent)
+        }
+        
+        .badge-inactive {
+            background: var(--danger-dim);
+            color: var(--danger)
+        }
+        
+        .badge-api {
+            background: var(--primary-dim);
+            color: var(--primary)
+        }
+        
+        .badge-mq {
+            background: var(--warn-dim);
+            color: var(--warn)
+        }
+        
+        .badge-expiring {
+            background: var(--warn-dim);
+            color: var(--warn)
+        }
+        /* ── TOGGLE SWITCH (green checkmark / red X style) ── */
+        
+        .toggle-sw {
+            position: relative;
+            display: inline-block;
+            width: 58px;
+            height: 30px;
+            cursor: pointer;
+            flex-shrink: 0
+        }
+        
+        .toggle-sw input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute
+        }
+        
+        .toggle-track {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #ef4444;
+            border-radius: 30px;
+            transition: background .22s;
+            box-shadow: inset 0 1px 4px rgba(0, 0, 0, .18)
+        }
+        
+        .toggle-track::after {
+            content: '\2715';
+            position: absolute;
+            left: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 11px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1;
+            pointer-events: none
+        }
+        
+        .toggle-track::before {
+            content: '';
+            position: absolute;
+            height: 24px;
+            width: 24px;
+            left: 3px;
+            top: 3px;
+            background: #fff;
+            border-radius: 50%;
+            transition: transform .22s cubic-bezier(.4, 0, .2, 1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, .28);
+            z-index: 1
+        }
+        
+        .toggle-sw input:checked+.toggle-track {
+            background: #22c55e
+        }
+        
+        .toggle-sw input:checked+.toggle-track::before {
+            transform: translateX(28px)
+        }
+        
+        .toggle-sw input:checked+.toggle-track::after {
+            content: '\2713';
+            left: auto;
+            right: 7px;
+            font-size: 13px
+        }
+        /* ── PAGINATION ── */
+        
+        .pag-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-top: 1px solid var(--border);
+            background: #f8fafc;
+            border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+            flex-wrap: wrap
+        }
+        
+        .pag-bar .pag-label {
+            font-size: 12px;
+            color: var(--text3)
+        }
+        
+        .pag-bar .pag-sel {
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 3px 22px 3px 8px;
+            font-size: 12px;
+            background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E") no-repeat right 6px center;
+            appearance: none;
+            cursor: pointer;
+            font-family: inherit;
+            outline: none
+        }
+        
+        .pag-bar .pag-btn {
+            padding: 3px 9px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: #fff;
+            cursor: pointer;
+            font-size: 12px;
+            color: var(--text2);
+            transition: all .12s;
+            font-family: inherit
+        }
+        
+        .pag-bar .pag-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            color: var(--primary)
+        }
+        
+        .pag-bar .pag-btn:disabled {
+            opacity: .4;
+            cursor: default
+        }
+        
+        .pag-bar .pag-info {
+            font-size: 12px;
+            color: var(--text3);
+            margin-left: auto
+        }
+        
+        .pag-bar .pag-cur {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            min-width: 60px;
+            text-align: center
+        }
+        /* ── MODAL ── */
+        
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, .45);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center
+        }
+        
+        .overlay.open {
+            display: flex
+        }
+        
+        .modal {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 0;
+            width: 600px;
+            max-width: 95vw;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .18);
+            animation: modalIn .2s ease
+        }
+        
+        .modal-lg {
+            width: 780px
+        }
+        
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: translateY(-12px) scale(.98)
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1)
+            }
+        }
+        
+        .modal-header {
+            padding: 18px 22px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f8fafc;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            flex-shrink: 0
+        }
+        
+        .modal-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text)
+        }
+        
+        .modal-body {
+            padding: 20px 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px
+        }
+        
+        .modal-footer {
+            padding: 14px 22px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            background: #f8fafc;
+            border-radius: 0 0 var(--radius-lg) var(--radius-lg)
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text3);
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            transition: all .15s
+        }
+        
+        .close-btn:hover {
+            background: var(--surface3);
+            color: var(--text)
+        }
+        /* ── INLINE EDIT NAME ROW ── */
+        
+        .name-edit-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 10px
+        }
+        
+        .name-edit-row .form-row {
+            flex: 1
+        }
+        
+        .section-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: .7px;
+            padding: 14px 22px 6px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f8fafc
+        }
+        
+        .header-pair {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 8px;
+            align-items: center
+        }
+        /* ── MISC ── */
+        
+        .mono {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px
+        }
+        
+        .date-cell {
+            color: var(--text2);
+            font-size: 12px
+        }
+        
+        .token-cell {
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+        
+        .token-mask {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            color: var(--text3);
+            letter-spacing: 2px
+        }
+        
+        .tag-list {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap
+        }
+        
+        .tag {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 4px;
+            padding: 2px 7px;
+            font-size: 11px;
+            color: #1d4ed8
+        }
+        
+        .cpa-ok {
+            color: var(--accent);
+            font-weight: 600
+        }
+        
+        .cpa-expired {
+            color: var(--danger);
+            font-weight: 500
+        }
+        
+        .cpa-id-badge {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 2px 7px;
+            color: var(--text2)
+        }
+        /* ── STAT CARDS ── */
+        
+        .cpa-stats,
+        .stat-grid {
+            display: grid;
+            gap: 16px;
+            margin-bottom: 20px
+        }
+        
+        .cpa-stats {
+            grid-template-columns: repeat(4, 1fr)
+        }
+        
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 18px 20px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .05)
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: .6px;
+            margin-bottom: 8px
+        }
+        
+        .stat-value {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text);
+            font-family: 'IBM Plex Mono', monospace
+        }
+        
+        .stat-sub {
+            font-size: 11px;
+            color: var(--text3);
+            margin-top: 4px
+        }
+        /* ── REPORTS ── */
+        
+        .badge-pending {
+            background: rgba(100, 116, 139, .12);
+            color: #475569
+        }
+        
+        .badge-testing {
+            background: rgba(99, 102, 241, .12);
+            color: #4f46e5
+        }
+        
+        .badge-test-failed {
+            background: var(--danger-dim);
+            color: var(--danger)
+        }
+        
+        .badge-test-success {
+            background: rgba(5, 122, 85, .12);
+            color: #047857
+        }
+        
+        .badge-renew-success {
+            background: rgba(5, 122, 85, .18);
+            color: #065f46;
+            font-weight: 700
+        }
+        
+        .badge-cancelled {
+            background: rgba(100, 116, 139, .1);
+            color: #94a3b8
+        }
+        
+        .dot-ok {
+            background: var(--accent)
+        }
+        
+        .dot-fail {
+            background: var(--danger)
+        }
+        /* ── EXPORT BUTTON DROPDOWN ── */
+        
+        .export-wrap {
+            position: relative;
+            display: inline-block
+        }
+        
+        .btn-export {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 16px;
+            border-radius: var(--radius);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            background: #16a34a;
+            color: #fff;
+            transition: all .15s;
+            font-family: inherit;
+            white-space: nowrap;
+            box-shadow: 0 1px 4px rgba(22, 163, 74, .3)
+        }
+        
+        .btn-export:hover {
+            background: #15803d;
+            box-shadow: 0 2px 8px rgba(22, 163, 74, .4)
+        }
+        
+        .btn-export svg {
+            flex-shrink: 0
+        }
+        /* Export generating modal */
+        
+        .export-generating-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, .5);
+            backdrop-filter: blur(3px);
+            z-index: 9000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn .15s ease
+        }
+        
+        .export-generating-box {
+            background: #fff;
+            border-radius: 16px;
+            padding: 36px 44px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, .2);
+            min-width: 320px
+        }
+        
+        .export-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #dcfce7;
+            border-top-color: #16a34a;
+            border-radius: 50%;
+            animation: spin .8s linear infinite
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+        
+        .export-gen-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text)
+        }
+        
+        .export-gen-sub {
+            font-size: 12px;
+            color: var(--text3);
+            text-align: center
+        }
+        
+        .export-gen-bar {
+            width: 220px;
+            height: 6px;
+            background: #dcfce7;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-top: 4px
+        }
+        
+        .export-gen-fill {
+            height: 100%;
+            background: #16a34a;
+            border-radius: 6px;
+            animation: fillBar 1.8s ease forwards
+        }
+        
+        @keyframes fillBar {
+            from {
+                width: 0
+            }
+            to {
+                width: 100%
+            }
+        }
+        
+        .export-menu {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 5px);
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+            z-index: 200;
+            min-width: 180px;
+            overflow: hidden;
+            display: none
+        }
+        
+        .export-menu.open {
+            display: block;
+            animation: fadeIn .12s ease
+        }
+        
+        .export-menu-item {
+            padding: 9px 14px;
+            font-size: 12px;
+            cursor: pointer;
+            color: var(--text2);
+            transition: background .12s;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+        
+        .export-menu-item:hover {
+            background: var(--surface2);
+            color: var(--text)
+        }
+        /* ── STATUS PILL + TOGGLE CELL ── */
+        
+        .status-toggle-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap
+        }
+        /* Pill */
+        
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px 4px 7px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 700;
+            transition: all .18s;
+            cursor: default;
+            border: 1px solid transparent;
+            min-width: 80px;
+            justify-content: center
+        }
+        
+        .status-pill::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            transition: background .18s
+        }
+        
+        .status-pill.is-active {
+            background: #dcfce7;
+            color: #15803d;
+            border-color: #86efac
+        }
+        
+        .status-pill.is-active::before {
+            background: #16a34a;
+            box-shadow: 0 0 0 2px rgba(22, 163, 74, .25)
+        }
+        
+        .status-pill.is-inactive {
+            background: #fee2e2;
+            color: #b91c1c;
+            border-color: #fca5a5
+        }
+        
+        .status-pill.is-inactive::before {
+            background: #dc2626;
+            box-shadow: 0 0 0 2px rgba(220, 38, 38, .2)
+        }
+        /* CPA status pills */
+        
+        .status-pill.is-expiring {
+            background: #fef9c3;
+            color: #854d0e;
+            border-color: #fde047
+        }
+        
+        .status-pill.is-expiring::before {
+            background: #ca8a04;
+            box-shadow: 0 0 0 2px rgba(202, 138, 4, .2)
+        }
+        /* linked/unlinked badge CSS removed — no longer used */
+        /* ── MODAL XL ── */
+        
+        .modal-xl {
+            width: 1020px
+        }
+        /* ── CPA REGISTER WIZARD ── */
+        
+        .cpa-step {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            position: relative
+        }
+        
+        .cpa-step-num {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all .2s
+        }
+        
+        .cpa-step-label {
+            font-size: 11px;
+            color: #94a3b8;
+            font-weight: 500;
+            white-space: nowrap;
+            transition: color .2s
+        }
+        
+        .cpa-step.active .cpa-step-num {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 0 0 3px rgba(26, 86, 219, .18)
+        }
+        
+        .cpa-step.active .cpa-step-label {
+            color: var(--primary);
+            font-weight: 700
+        }
+        
+        .cpa-step.done .cpa-step-num {
+            background: var(--accent);
+            color: #fff
+        }
+        
+        .cpa-step.done .cpa-step-label {
+            color: var(--accent)
+        }
+        
+        .cpa-step-line {
+            flex: 1;
+            height: 2px;
+            background: #e2e8f0;
+            min-width: 40px;
+            margin: 0 6px
+        }
+        /* RD Step rows */
+        
+        .rd-step-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 10px 0
+        }
+        
+        .rd-step-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+            flex-shrink: 0;
+            margin-top: 1px
+        }
+        
+        .rd-step-body {
+            flex: 1
+        }
+        
+        .rd-step-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px
+        }
+        
+        .rd-step-desc {
+            font-size: 12px;
+            color: var(--text2);
+            line-height: 1.6
+        }
+        
+        .rd-step-connector {
+            width: 2px;
+            background: #e2e8f0;
+            height: 12px;
+            margin-left: 15px;
+            border-radius: 2px
+        }
+        
+        .rd-doc-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-top: 6px
+        }
+        
+        .rd-doc-item {
+            font-size: 11px;
+            color: var(--text2);
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            padding: 5px 10px;
+            line-height: 1.4
+        }
+        /* ── CPA WIZARD ── */
+        
+        .wizard-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px
+        }
+        
+        .wizard-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--border2);
+            color: var(--text3);
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all .2s
+        }
+        
+        .wizard-dot.active {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 0 0 3px rgba(26, 86, 219, .2)
+        }
+        
+        .wizard-dot.done {
+            background: var(--accent);
+            color: #fff
+        }
+        
+        .wizard-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text3);
+            white-space: nowrap
+        }
+        
+        .wizard-line {
+            flex: 1;
+            height: 2px;
+            background: var(--border);
+            align-self: center;
+            margin: 0 4px;
+            margin-bottom: 20px;
+            min-width: 30px;
+            transition: background .2s
+        }
+        
+        .wizard-line.done {
+            background: var(--accent)
+        }
+        
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-brainergy">
+                <div class="icon">B</div>
+                <span class="name">Brainergy</span>
+            </div>
+            <div class="logo-exat">
+                <div class="exat-bar">
+                    <div class="bar bar1"></div>
+                    <div class="bar bar2"></div>
+                    <div class="bar bar3"></div>
+                </div>
+                <span class="exat-text">EXAT</span>
+            </div>
+        </div>
+        <nav class="nav">
+            <div class="nav-group-label">Management</div>
+            <div class="nav-item" id="nav-application" onclick="navigate('application')"><span class="nav-icon">⚡</span> Application</div>
+            <div class="nav-item" id="nav-company" onclick="navigate('company')"><span class="nav-icon">🏢</span> Company</div>
+            <div class="nav-item" id="nav-cpa" onclick="navigate('cpa')"><span class="nav-icon">🔑</span> CPA</div>
+            <div class="nav-divider"></div>
+            <div class="nav-group-label">Reports</div>
+            <div class="nav-item" id="reconMenu" onclick="toggleRecon()" style="justify-content:space-between">
+                <span style="display:flex;align-items:center;gap:10px"><span class="nav-icon">📊</span> Reconcile Report</span>
+                <span id="reconArrow" style="font-size:10px">▶</span>
+            </div>
+            <div id="reconSub" class="nav-sub" style="display:none">
+                <div class="nav-item" id="nav-daily" onclick="navigate('daily')"><span class="nav-icon" style="font-size:12px">•</span> Daily RD Report</div>
+                <div class="nav-item" id="nav-monthly" onclick="navigate('monthly')"><span class="nav-icon" style="font-size:12px">•</span> Monthly RD Report</div>
+            </div>
+        </nav>
+    </aside>
+
+    <div class="main">
+        <div class="topbar">
+            <div class="breadcrumb">
+                <span>Platform</span>
+                <span class="sep">›</span>
+                <span class="current" id="breadcrumbCurrent">Application</span>
+            </div>
+            <div class="topbar-right">
+                <!-- Notification Bell -->
+                <div class="notif-wrap" id="notifWrap">
+                    <button class="notif-btn" onclick="toggleNotif(event)" title="การแจ้งเตือน">
+          🔔
+          <span class="notif-badge" id="notifBadge">0</span>
+        </button>
+                    <div class="notif-panel" id="notifPanel">
+                        <div class="notif-panel-hdr">
+                            <span class="notif-panel-title">🔔 การแจ้งเตือน</span>
+                            <button class="notif-mark-all" onclick="markAllRead()">อ่านทั้งหมด</button>
+                        </div>
+                        <div id="notifList"></div>
+                    </div>
+                </div>
+                <span style="font-size:12px;color:var(--text3)">EXAT Admin</span>
+                <div class="avatar">EA</div>
+            </div>
+        </div>
+
+        <div class="content">
+
+            <!-- ═══ APPLICATION PAGE ═══ -->
+            <div id="page-application" class="page-view active">
+                <div class="page-header">
+                    <div>
+                        <div class="page-title">Application List</div>
+                        <div class="page-subtitle">จัดการ Application การส่งข้อมูล</div>
+                    </div>
+                    <div class="page-actions">
+                        <div class="export-wrap">
+                            <button class="btn-export" onclick="doExport('',exportAppsXLSX)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Export</button>
+                        </div>
+                        <button class="btn btn-primary" onclick="openCreateApp()">＋ Create</button>
+                    </div>
+                </div>
+                <div class="search-bar">
+                    <input class="input" id="searchAppName" placeholder="Application Name" style="width:200px">
+                    <select class="select" id="searchProtocol" style="width:160px">
+          <option value="">Protocol — All</option>
+          <option value="API">API</option>
+          <option value="Message Queue">Message Queue</option>
+        </select>
+                    <select class="select" id="searchStatus" style="width:140px">
+          <option value="">Status — All</option>
+          <option value="Active">Active</option>
+          <option value="Inactive">Inactive</option>
+        </select>
+                    <button class="btn btn-ghost btn-sm" onclick="resetSearchApp()">Default All</button>
+                    <div class="search-divider"></div>
+                    <button class="btn btn-primary btn-sm" onclick="filterApps()">🔍 Search</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Application Name</th>
+                                <th>Protocol</th>
+                                <th>Companies</th>
+                                <th>Created Date</th>
+                                <th>Updated Date</th>
+                                <th style="width:150px">Status / Toggle</th>
+                                <th style="width:130px">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appTableBody"></tbody>
+                    </table>
+                    <div id="appPag"></div>
+                </div>
+            </div>
+
+            <!-- ═══ COMPANY PAGE ═══ -->
+            <div id="page-company" class="page-view">
+                <div class="page-header">
+                    <div>
+                        <div class="page-title">Company List</div>
+                        <div class="page-subtitle">จัดการข้อมูลบริษัท</div>
+                    </div>
+                    <div class="page-actions">
+                        <div class="export-wrap">
+                            <button class="btn-export" onclick="doExport('',exportCompaniesXLSX)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Export</button>
+                        </div>
+                        <button class="btn btn-primary" onclick="openCreateCompany()">＋ Create</button>
+                    </div>
+                </div>
+                <div class="search-bar">
+                    <input class="input" id="searchCompName" placeholder="Company Name" style="width:200px">
+                    <select class="select" id="searchCompApp" style="width:180px"><option value="">Application — All</option></select>
+                    <select class="select" id="searchCompStatus" style="width:140px">
+          <option value="">Status — All</option>
+          <option value="Active">Active</option>
+          <option value="Inactive">Inactive</option>
+        </select>
+                    <button class="btn btn-ghost btn-sm" onclick="resetSearchComp()">Default All</button>
+                    <div class="search-divider"></div>
+                    <button class="btn btn-primary btn-sm" onclick="filterCompanies()">🔍 Search</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Company Name</th>
+                                <th>Tax ID</th>
+                                <th>Application Name</th>
+                                <th>CPA Remaining</th>
+                                <th>Created Date</th>
+                                <th>Updated Date</th>
+                                <th style="width:150px">Status / Toggle</th>
+                                <th style="width:130px">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="compTableBody"></tbody>
+                    </table>
+                    <div id="compPag"></div>
+                </div>
+            </div>
+
+            <!-- ═══ CPA PAGE ═══ -->
+            <div id="page-cpa" class="page-view">
+                <div class="page-header">
+                    <div>
+                        <div class="page-title">CPA</div>
+                        <div class="page-subtitle">จัดการ CPA Certificate สำหรับ e-Tax Invoice</div>
+                    </div>
+                    <div class="page-actions">
+                        <div class="export-wrap">
+                            <button class="btn-export" onclick="doExport('',exportCPAsXLSX)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Export</button>
+                        </div>
+                        <button class="btn btn-primary" onclick="openRegisterCPA()">＋ Register CPA</button>
+                    </div>
+                </div>
+                <div class="search-bar">
+                    <input class="input" id="searchCPAComp" placeholder="Company Name" style="width:200px">
+                    <select class="select" id="searchCPAStatus" style="width:160px">
+          <option value="">Status — All</option>
+          <option value="Active">Active</option>
+          <option value="Expiring Soon">Expiring Soon</option>
+          <option value="Expired">Expired</option>
+        </select>
+                    <button class="btn btn-ghost btn-sm" onclick="resetSearchCPA()">Default All</button>
+                    <div class="search-divider"></div>
+                    <button class="btn btn-primary btn-sm" onclick="filterCPAs()">🔍 Search</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Company Name</th>
+                                <th>Tax ID</th>
+                                <th>Status</th>
+                                <th>Expired Date</th>
+                                <th>Created Date</th>
+                                <th style="width:80px">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cpaTableBody"></tbody>
+                    </table>
+                    <div id="cpaPag"></div>
+                </div>
+            </div>
+
+
+            <!-- ═══ DAILY PAGE ═══ -->
+            <div id="page-daily" class="page-view">
+                <div class="page-header">
+                    <div>
+                        <div class="page-title">Daily RD Report</div>
+                        <div class="page-subtitle">รายงานการส่งข้อมูลให้กรมสรรพากร รายวัน</div>
+                    </div>
+                    <div class="page-actions">
+                        <button class="btn-export" onclick="doExport('',exportDailyXLSX)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Export</button>
+                    </div>
+                </div>
+                <!-- Filter bar -->
+                <div class="search-bar">
+                    <div style="display:flex;flex-direction:column;gap:3px">
+                        <label style="font-size:11px">Issue Date (From)</label>
+                        <input class="input" type="datetime-local" id="dailyFilterFrom" style="width:186px">
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:3px">
+                        <label style="font-size:11px">Issue Date (To)</label>
+                        <input class="input" type="datetime-local" id="dailyFilterTo" style="width:186px">
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:3px">
+                        <label style="font-size:11px">Application</label>
+                        <select class="select" id="dailyFilterApp" style="width:180px"><option value="">All</option></select>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:3px">
+                        <label style="font-size:11px">Company</label>
+                        <select class="select" id="dailyFilterComp" style="width:170px"><option value="">All</option></select>
+                    </div>
+                    <button class="btn btn-ghost btn-sm" style="align-self:flex-end" onclick="resetDailyFilter()">Reset</button>
+                    <div class="search-divider"></div>
+                    <button class="btn btn-primary btn-sm" style="align-self:flex-end" onclick="filterDailyReport()">🔍 Search</button>
+                </div>
+                <!-- Clickable Summary Cards -->
+                <div class="stat-grid" id="dailyStats" style="grid-template-columns:repeat(4,1fr)"></div>
+                <!-- Table with rows-per-page at top-right -->
+                <div class="table-wrap">
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px 0;background:#f8fafc;border-bottom:1px solid var(--border)">
+                        <span style="font-size:12px;font-weight:600;color:var(--text2)">รายการเอกสาร</span>
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <span style="font-size:12px;color:var(--text3)">แถวต่อหน้า</span>
+                            <select class="pag-sel" id="dailyPPP" onchange="changePPP('daily',parseInt(this.value))" style="width:70px">
+              <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option>
+            </select>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Action Date</th>
+                                <th>Conversation ID</th>
+                                <th>Invoice No.</th>
+                                <th>Issue Date</th>
+                                <th>Status</th>
+                                <th>RD Message</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dailyTableBody"></tbody>
+                    </table>
+                    <div id="dailyPag"></div>
+                </div>
+            </div>
+
+            <!-- ═══ MONTHLY PAGE ═══ -->
+            <div id="page-monthly" class="page-view">
+                <div class="page-header">
+                    <div>
+                        <div class="page-title">Monthly RD Report</div>
+                        <div class="page-subtitle">รายงานสรุปการส่งข้อมูลกรมสรรพากร รายเดือน</div>
+                    </div>
+                    <div class="page-actions">
+                        <button class="btn-export" onclick="doExport('',exportMonthlyXLSX)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Export</button>
+                    </div>
+                </div>
+                <!-- Filter bar -->
+                <div class="search-bar">
+                    <div style="display:flex;flex-direction:column;gap:3px">
+                        <label style="font-size:11px">Period From</label>
+                        <input class="input" type="date" id="monthlyFilterFrom" style="width:160px">
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:3px">
+                        <label style="font-size:11px">Period To</label>
+                        <input class="input" type="date" id="monthlyFilterTo" style="width:160px">
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:3px">
+                        <label style="font-size:11px">Application</label>
+                        <select class="select" id="monthlyFilterApp" style="width:180px"><option value="">All</option></select>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:3px">
+                        <label style="font-size:11px">Company</label>
+                        <select class="select" id="monthlyFilterComp" style="width:170px"><option value="">All</option></select>
+                    </div>
+                    <button class="btn btn-ghost btn-sm" style="align-self:flex-end" onclick="resetMonthlyFilter()">Reset</button>
+                    <div class="search-divider"></div>
+                    <button class="btn btn-primary btn-sm" style="align-self:flex-end" onclick="filterMonthlyReport()">🔍 Search</button>
+                </div>
+                <!-- Clickable Summary Cards -->
+                <div class="stat-grid" id="monthlyStats" style="grid-template-columns:repeat(4,1fr)"></div>
+                <!-- Table with rows-per-page at top-right -->
+                <div class="table-wrap">
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px 0;background:#f8fafc;border-bottom:1px solid var(--border)">
+                        <span style="font-size:12px;font-weight:600;color:var(--text2)">สรุปรายวัน</span>
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <span style="font-size:12px;color:var(--text3)">แถวต่อหน้า</span>
+                            <select class="pag-sel" id="monthlyPPP" onchange="changePPP('monthly',parseInt(this.value))" style="width:70px">
+              <option value="10" selected>10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option>
+            </select>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Action Date</th>
+                                <th style="text-align:right">Document</th>
+                                <th style="text-align:right">Acknowledged</th>
+                                <th style="text-align:right">Accepted</th>
+                                <th style="text-align:right">Rejected</th>
+                            </tr>
+                        </thead>
+                        <tbody id="monthlyTableBody"></tbody>
+                    </table>
+                    <div id="monthlyPag"></div>
+                </div>
+            </div>
+
+        </div>
+        <!-- /content -->
+    </div>
+    <!-- /main -->
+
+    <!-- ═══ MODALS ═══ -->
+
+    <!-- Create Application -->
+    <div class="overlay" id="overlayCreateApp">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">✨ Create New Application</span>
+                <button class="close-btn" onclick="closeModal('overlayCreateApp')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row"><label>Application Name</label><input class="input" id="newAppName" placeholder="เช่น AOT SmartTax"></div>
+                <div class="form-row"><label>Protocol</label>
+                    <select class="select" id="newAppProtocol" onchange="onProtocolChange('new')">
+          <option value="">— Select Protocol —</option>
+          <option value="API">API</option>
+          <option value="Message Queue">Message Queue</option>
+        </select>
+                </div>
+                <div id="newApiConfig" style="display:none">
+                    <div class="form-row" style="margin-bottom:10px"><label>URL</label><input class="input" id="newAppUrl" placeholder="https://app.example.com"></div>
+                    <label style="margin-bottom:8px;display:block">Headers</label>
+                    <div id="newHeadersList"></div>
+                    <button class="btn btn-outline btn-sm" style="margin-top:8px" onclick="addHeader('new')">＋ Add Header</button>
+                </div>
+                <div id="newMqConfig" style="display:none">
+                    <div class="form-row"><label>Connect URL</label><input class="input" id="newMqUrl" placeholder="amqp://username:password@rabbitmq.example.com:5672//"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('overlayCreateApp')">Cancel</button>
+                <button class="btn btn-primary" onclick="createApp()">Create Application</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View/Edit Application -->
+    <div class="overlay" id="overlayViewApp">
+        <div class="modal modal-xl">
+            <div class="modal-header">
+                <span class="modal-title" id="appDetailModalTitle">📄 Application Detail</span>
+                <button class="close-btn" onclick="closeModal('overlayViewApp')">✕</button>
+            </div>
+            <div class="modal-body" id="appDetailBody">
+                <!-- Application Name + inline Edit button -->
+                <div class="name-edit-row">
+                    <div class="form-row">
+                        <label>Application Name</label>
+                        <input class="input input-readonly" id="viewAppName" readonly>
+                    </div>
+                    <button class="btn btn-outline btn-sm" id="btnEditApp" onclick="enterAppEditMode()" style="margin-bottom:0;flex-shrink:0">✏ Edit</button>
+                </div>
+                <div class="form-row">
+                    <label>Status</label>
+                    <select class="select input-readonly" id="viewAppStatus" disabled>
+          <option value="Active">Active</option><option value="Inactive">Inactive</option>
+        </select>
+                </div>
+                <div class="form-row">
+                    <label>Protocol</label>
+                    <select class="select input-readonly" id="viewAppProtocol" disabled onchange="onProtocolChange('view')">
+          <option value="API">API</option><option value="Message Queue">Message Queue</option>
+        </select>
+                </div>
+                <div id="viewApiConfig">
+                    <div class="form-row" style="margin-bottom:10px"><label>URL</label><input class="input input-readonly" id="viewAppUrl" readonly></div>
+                    <label style="margin-bottom:8px;display:block">Headers</label>
+                    <div id="viewHeadersList"></div>
+                    <div id="viewAddHeaderBtn" style="display:none">
+                        <button class="btn btn-outline btn-sm" style="margin-top:8px" onclick="addHeader('view')">＋ Add Header</button>
+                    </div>
+                </div>
+                <div id="viewMqConfig" style="display:none">
+                    <div class="form-row"><label>Connect URL</label><input class="input input-readonly" id="viewMqUrl" readonly></div>
+                </div>
+                <!-- ── Save / Cancel — below config fields, edit-mode only ── -->
+                <div id="appEditActions" style="display:none;justify-content:flex-end;gap:8px;padding:12px 0 0;border-top:2px solid var(--primary-dim);margin-top:8px">
+                    <button class="btn btn-danger-solid" onclick="cancelAppEdit()">✕ Cancel</button>
+                    <button class="btn btn-success" onclick="saveApp()">💾 Save</button>
+                </div>
+            </div>
+
+            <!-- Token List — Generate ALWAYS visible (view + edit) -->
+            <div class="section-label">
+                🔐 Token List
+                <button class="btn btn-outline btn-sm" id="btnGenToken" onclick="openGenerateToken()">⚡ Generate Token</button>
+            </div>
+            <div style="padding:0 22px 14px">
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Host</th>
+                                <th>Token</th>
+                                <th>Status</th>
+                                <th>Created Date</th>
+                                <th id="tokenActionCol" style="width:90px">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tokenTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Company List — linked companies only -->
+            <div class="section-label">
+                🏢 Company List
+                <span style="font-size:11px;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">แสดงเฉพาะ Company ที่ผูกกับ Application นี้</span>
+            </div>
+            <div style="padding:0 22px 20px">
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Company Name</th>
+                                <th>Tax ID</th>
+                                <th>Application</th>
+                                <th>CPA Remaining</th>
+                                <th>Created Date</th>
+                                <th>Updated Date</th>
+                                <th style="width:160px">Status</th>
+                                <th id="compRemoveCol" style="width:80px;display:none"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="appCompTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Generate Token -->
+    <div class="overlay" id="overlayGenToken">
+        <div class="modal" style="width:440px">
+            <div class="modal-header">
+                <span class="modal-title">⚡ Generate Token</span>
+                <button class="close-btn" onclick="closeModal('overlayGenToken')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row"><label>Host</label><input class="input" id="genTokenHost" placeholder="IP Address or Domain Name"></div>
+                <div class="form-row"><label>Expired Date</label><input class="input" id="genTokenExpiry" type="date" placeholder='Default "No Expire"'></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('overlayGenToken')">Cancel</button>
+                <button class="btn btn-primary" onclick="generateToken()">⚡ Generate</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assign Company -->
+    <div class="overlay" id="overlayAssignCompany">
+        <div class="modal" style="width:520px">
+            <div class="modal-header">
+                <span class="modal-title">🏢 Assign Company</span>
+                <button class="close-btn" onclick="closeModal('overlayAssignCompany')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div style="font-size:13px;color:var(--text2);margin-bottom:4px">เลือก Company ที่ต้องการผูกกับ <strong id="assignAppName">—</strong></div>
+                <div style="font-size:11px;color:var(--text3);margin-bottom:12px">แสดงเฉพาะ Company ที่ยังไม่ได้ผูกกับ Application ใด</div>
+                <div class="table-wrap" style="max-height:320px;overflow-y:auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:36px"></th>
+                                <th>Company Name</th>
+                                <th>Tax ID</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="assignCompTableBody"></tbody>
+                    </table>
+                </div>
+                <div id="assignNoData" style="display:none;text-align:center;padding:20px;color:var(--text3);font-size:13px">ไม่มี Company ที่สามารถ Assign ได้</div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('overlayAssignCompany')">Cancel</button>
+                <button class="btn btn-primary" onclick="confirmAssignCompany()">✔ Assign</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Company -->
+    <div class="overlay" id="overlayCreateComp">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">🏢 Create New Company</span>
+                <button class="close-btn" onclick="closeModal('overlayCreateComp')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row"><label>Company Name</label><input class="input" id="newCompName" placeholder="เช่น EXATHQ"></div>
+                <div class="form-row"><label>Tax ID (13 หลัก)</label><input class="input" id="newCompTax" placeholder="0000000000000" maxlength="13"></div>
+                <div class="form-row"><label>Email</label><input class="input" id="newCompEmail" placeholder="example@exat.co.th" type="email"></div>
+                <div class="form-row"><label>RD URL Reference</label><input class="input" id="newCompRD" placeholder="https://rdservice.rd.go.th/..."></div>
+                <div class="form-row"><label>Application</label><select class="select" id="newCompApp"></select></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('overlayCreateComp')">Cancel</button>
+                <button class="btn btn-primary" onclick="createCompany()">Create Company</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View/Edit Company -->
+    <div class="overlay" id="overlayViewComp">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">🏢 Company Detail</span>
+                <button class="close-btn" onclick="closeModal('overlayViewComp')">✕</button>
+            </div>
+            <div class="modal-body">
+                <!-- Company Name + inline Edit button -->
+                <div class="name-edit-row">
+                    <div class="form-row">
+                        <label>Company Name</label>
+                        <input class="input input-readonly" id="viewCompName" readonly>
+                    </div>
+                    <button class="btn btn-outline btn-sm" id="btnEditComp" onclick="enterCompEditMode()" style="flex-shrink:0">✏ Edit</button>
+                </div>
+                <div class="form-row"><label>Tax ID</label><input class="input input-readonly mono" id="viewCompTax" readonly></div>
+                <div class="form-row"><label>Email</label><input class="input input-readonly" id="viewCompEmail" readonly></div>
+                <div class="form-row"><label>RD URL Reference</label><input class="input input-readonly" id="viewCompRD" readonly></div>
+                <div class="form-row"><label>Application</label><input class="input input-readonly" id="viewCompApp" readonly></div>
+                <div class="form-row"><label>Status</label>
+                    <select class="select input-readonly" id="viewCompStatus" disabled>
+          <option value="Active">Active</option><option value="Inactive">Inactive</option>
+        </select>
+                </div>
+                <div class="form-row"><label>CPA Remaining</label><input class="input input-readonly" id="viewCompCPA" readonly></div>
+            </div>
+            <div class="modal-footer" id="compEditFooter" style="display:none">
+                <button class="btn btn-danger-solid" onclick="cancelCompEdit()">✕ Cancel</button>
+                <button class="btn btn-success" onclick="saveComp()">💾 Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CPA Register — Multi-step wizard (3 steps) -->
+    <div class="overlay" id="overlayCreateCPA">
+        <div class="modal" style="width:680px">
+            <div class="modal-header">
+                <div style="display:flex;flex-direction:column;gap:6px;flex:1">
+                    <span class="modal-title" id="cpaWizardTitle">🗓 นัดหมายกับ RD</span>
+                    <!-- 3-Step indicator -->
+                    <div style="display:flex;align-items:center;gap:0;margin-top:2px">
+                        <div class="cpa-step active" id="cpaStep1Dot">
+                            <span class="cpa-step-num">1</span>
+                            <span class="cpa-step-label">นัดหมายกับ RD</span>
+                        </div>
+                        <div class="cpa-step-line"></div>
+                        <div class="cpa-step" id="cpaStep2Dot">
+                            <span class="cpa-step-num">2</span>
+                            <span class="cpa-step-label">Register CPA UAT</span>
+                        </div>
+                        <div class="cpa-step-line"></div>
+                        <div class="cpa-step" id="cpaStep3Dot">
+                            <span class="cpa-step-num">3</span>
+                            <span class="cpa-step-label">Upload XML</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="close-btn" onclick="closeModal('overlayCreateCPA')" style="align-self:flex-start;margin-top:2px">✕</button>
+            </div>
+
+            <!-- STEP 1: นัดหมายกับ RD -->
+            <div id="cpaWizardStep1">
+                <div class="modal-body" style="gap:14px">
+                    <!-- Intro box -->
+                    <div style="background:linear-gradient(135deg,#eff6ff,#e0f2fe);border:1px solid #bae6fd;border-radius:10px;padding:16px 18px;display:flex;gap:14px;align-items:flex-start">
+                        <div style="font-size:28px;line-height:1;flex-shrink:0">🏛️</div>
+                        <div>
+                            <div style="font-size:14px;font-weight:700;color:#0c4a6e;margin-bottom:4px">ขอ CPA Certificate จากกรมสรรพากร</div>
+                            <div style="font-size:12px;color:#075985;line-height:1.6">ก่อนเริ่มใช้งานระบบ Host to Host กับกรมสรรพากร ผู้ประกอบการต้องยื่นเรื่องขอรับ CPA Certificate (Client Certificate) เพื่อพิสูจน์ตัวตนในการส่งข้อมูลอิเล็กทรอนิกส์</div>
+                        </div>
+                    </div>
+
+                    <!-- Steps -->
+                    <div style="display:flex;flex-direction:column;gap:0">
+
+                        <div class="rd-step-row">
+                            <div class="rd-step-icon" style="background:#dbeafe;color:#1d4ed8">1</div>
+                            <div class="rd-step-body">
+                                <div class="rd-step-title">ยื่นหนังสือแจ้งความประสงค์</div>
+                                <div class="rd-step-desc">ติดต่อกองบริหารการเสียภาษีทางอิเล็กทรอนิกส์ กรมสรรพากร ชั้น 21 อาคารกรมสรรพากร<br> 📞 โทร. <strong>02 272 9771</strong> หรือ <a href="https://etax.rd.go.th" target="_blank" style="color:var(--primary)">etax.rd.go.th</a></div>
+                            </div>
+                        </div>
+                        <div class="rd-step-connector"></div>
+
+                        <div class="rd-step-row">
+                            <div class="rd-step-icon" style="background:#dcfce7;color:#15803d">2</div>
+                            <div class="rd-step-body">
+                                <div class="rd-step-title">เตรียมเอกสารที่ต้องใช้</div>
+                                <div class="rd-step-desc">
+                                    <div class="rd-doc-list">
+                                        <div class="rd-doc-item">📄 หนังสือแจ้งความประสงค์ขอเชื่อมต่อระบบ Host to Host (บ.อ.01)</div>
+                                        <div class="rd-doc-item">📄 สำเนาหนังสือรับรองบริษัท (ไม่เกิน 6 เดือน)</div>
+                                        <div class="rd-doc-item">📄 สำเนาบัตรประชาชนผู้มีอำนาจลงนาม</div>
+                                        <div class="rd-doc-item">📄 ข้อมูล IP Address และ Endpoint ของระบบ</div>
+                                        <div class="rd-doc-item">📄 SSL Certificate ของ Server</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rd-step-connector"></div>
+
+                        <div class="rd-step-row">
+                            <div class="rd-step-icon" style="background:#fef9c3;color:#854d0e">3</div>
+                            <div class="rd-step-body">
+                                <div class="rd-step-title">รอผลการพิจารณา</div>
+                                <div class="rd-step-desc">กรมสรรพากรจะพิจารณาคุณสมบัติและแจ้งผลทางอีเมลที่ลงทะเบียนไว้ภายใน <strong>5–10 วันทำการ</strong><br> เมื่อผ่านการพิจารณา กรมสรรพากรจะออก CPA (UAT) ให้เพื่อทดสอบการส่งข้อมูล</div>
+                            </div>
+                        </div>
+                        <div class="rd-step-connector"></div>
+
+                        <div class="rd-step-row">
+                            <div class="rd-step-icon" style="background:#f3e8ff;color:#7e22ce">4</div>
+                            <div class="rd-step-body">
+                                <div class="rd-step-title">ดาวน์โหลด CPA (UAT) และตั้งค่าระบบ</div>
+                                <div class="rd-step-desc">ดาวน์โหลด CPA Certificate สำหรับทดสอบจากอีเมลที่กรมสรรพากรส่งให้ นำไป Register ในระบบเพื่อเริ่มทดสอบส่งข้อมูล 4 ประเภท ได้แก่ TIV, DBN, CDN, RCT</div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Info note -->
+                    <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:12px 14px;font-size:12px;color:#92400e;display:flex;gap:10px;align-items:flex-start">
+                        <span style="font-size:16px;flex-shrink:0">💡</span>
+                        <div>หลังจากได้รับ CPA (UAT) จากกรมสรรพากรแล้ว กด <strong>"Next"</strong> เพื่อไปยังขั้นตอน Register CPA เข้าระบบ และเริ่มทดสอบการส่งข้อมูล</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline" onclick="closeModal('overlayCreateCPA')">ปิด</button>
+                    <button class="btn btn-primary" onclick="cpaWizardNext(1)">Next → Register CPA UAT</button>
+                </div>
+            </div>
+
+            <!-- STEP 2: Register CPA UAT -->
+            <div id="cpaWizardStep2" style="display:none">
+                <div class="modal-body" style="gap:16px">
+                    <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:11px 14px;font-size:12px;color:#14532d;display:flex;gap:8px;align-items:center">
+                        <span style="font-size:15px">✅</span> ได้รับ CPA (UAT) จากกรมสรรพากรแล้ว กรอกข้อมูลด้านล่างเพื่อ Register เข้าระบบ
+                    </div>
+                    <div class="form-row">
+                        <label>Company</label>
+                        <select class="select" id="newCPAComp"></select>
+                    </div>
+                    <div class="form-row">
+                        <label>Path <span style="font-weight:400;color:var(--text3)">(Certificate File Path หรือ Endpoint URL)</span></label>
+                        <input class="input" id="newCPAPath" placeholder="เช่น /certs/company.p12 หรือ https://host/cpa">
+                    </div>
+                    <div class="form-row">
+                        <label>Expired Date</label>
+                        <input class="input" id="newCPATo" type="date">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline" onclick="cpaWizardBack(2)">← Back</button>
+                    <button class="btn btn-outline" onclick="closeModal('overlayCreateCPA')">Cancel</button>
+                    <button class="btn btn-primary" onclick="cpaWizardNext(2)">Submit → Upload XML</button>
+                </div>
+            </div>
+
+            <!-- STEP 3: Upload XML -->
+            <div id="cpaWizardStep3" style="display:none">
+                <div class="modal-body" style="gap:16px">
+                    <div style="background:linear-gradient(135deg,#eff6ff,#e0f2fe);border:1px solid #bae6fd;border-radius:10px;padding:14px 16px;font-size:12px;color:#0c4a6e;display:flex;gap:10px;align-items:flex-start">
+                        <span style="font-size:18px;flex-shrink:0">📋</span>
+                        <div>
+                            <div style="font-weight:700;margin-bottom:3px">ทดสอบการส่ง XML ให้กรมสรรพากร</div>
+                            <div style="line-height:1.6">อัปโหลดไฟล์ XML ทดสอบ 4 ประเภทที่กรมสรรพากรกำหนด เพื่อยืนยันว่าระบบสามารถส่งข้อมูล e-Tax Invoice ได้ถูกต้อง</div>
+                        </div>
+                    </div>
+
+                    <!-- XML Upload types -->
+                    <div style="display:flex;flex-direction:column;gap:10px">
+
+                        <div style="border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:12px;background:#fafbfc">
+                            <div style="width:36px;height:36px;background:#dbeafe;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#1d4ed8;flex-shrink:0">TIV</div>
+                            <div style="flex:1">
+                                <div style="font-size:13px;font-weight:600;color:var(--text)">Tax Invoice / ใบกำกับภาษี</div>
+                                <div style="font-size:11px;color:var(--text3);margin-top:2px">ไฟล์ XML ใบกำกับภาษีสำหรับทดสอบ</div>
+                            </div>
+                            <label style="cursor:pointer;font-weight:400">
+              <input type="file" id="xmlTIV" accept=".xml" style="display:none" onchange="onXmlUpload(this,'labelTIV')">
+              <span id="labelTIV" class="btn btn-outline btn-sm" style="pointer-events:none">📂 เลือกไฟล์</span>
+            </label>
+                        </div>
+
+                        <div style="border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:12px;background:#fafbfc">
+                            <div style="width:36px;height:36px;background:#dcfce7;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#15803d;flex-shrink:0">DBN</div>
+                            <div style="flex:1">
+                                <div style="font-size:13px;font-weight:600;color:var(--text)">Debit Note / ใบเพิ่มหนี้</div>
+                                <div style="font-size:11px;color:var(--text3);margin-top:2px">ไฟล์ XML ใบเพิ่มหนี้สำหรับทดสอบ</div>
+                            </div>
+                            <label style="cursor:pointer;font-weight:400">
+              <input type="file" id="xmlDBN" accept=".xml" style="display:none" onchange="onXmlUpload(this,'labelDBN')">
+              <span id="labelDBN" class="btn btn-outline btn-sm" style="pointer-events:none">📂 เลือกไฟล์</span>
+            </label>
+                        </div>
+
+                        <div style="border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:12px;background:#fafbfc">
+                            <div style="width:36px;height:36px;background:#fef9c3;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#854d0e;flex-shrink:0">CDN</div>
+                            <div style="flex:1">
+                                <div style="font-size:13px;font-weight:600;color:var(--text)">Credit Note / ใบลดหนี้</div>
+                                <div style="font-size:11px;color:var(--text3);margin-top:2px">ไฟล์ XML ใบลดหนี้สำหรับทดสอบ</div>
+                            </div>
+                            <label style="cursor:pointer;font-weight:400">
+              <input type="file" id="xmlCDN" accept=".xml" style="display:none" onchange="onXmlUpload(this,'labelCDN')">
+              <span id="labelCDN" class="btn btn-outline btn-sm" style="pointer-events:none">📂 เลือกไฟล์</span>
+            </label>
+                        </div>
+
+                        <div style="border:1px solid var(--border);border-radius:8px;padding:12px 14px;display:flex;align-items:center;gap:12px;background:#fafbfc">
+                            <div style="width:36px;height:36px;background:#f3e8ff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#7e22ce;flex-shrink:0">RCT</div>
+                            <div style="flex:1">
+                                <div style="font-size:13px;font-weight:600;color:var(--text)">Receipt / ใบรับ</div>
+                                <div style="font-size:11px;color:var(--text3);margin-top:2px">ไฟล์ XML ใบรับสำหรับทดสอบ</div>
+                            </div>
+                            <label style="cursor:pointer;font-weight:400">
+              <input type="file" id="xmlRCT" accept=".xml" style="display:none" onchange="onXmlUpload(this,'labelRCT')">
+              <span id="labelRCT" class="btn btn-outline btn-sm" style="pointer-events:none">📂 เลือกไฟล์</span>
+            </label>
+                        </div>
+
+                    </div>
+
+                    <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:10px 14px;font-size:11px;color:#92400e;display:flex;gap:8px;align-items:flex-start">
+                        <span style="flex-shrink:0">💡</span>
+                        <span>กด <strong>Confirm Upload</strong> เพื่อบันทึก CPA ลงในระบบ — ไม่จำเป็นต้องอัปโหลดครบทุกประเภทก็ได้ สามารถเพิ่มภายหลังได้</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline" onclick="cpaWizardBack(3)">← Back</button>
+                    <button class="btn btn-outline" onclick="closeModal('overlayCreateCPA')">Cancel</button>
+                    <button class="btn btn-success" onclick="createCPA()">✔ Confirm Upload &amp; Register</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- View CPA (simplified: no close button at bottom, no timeline, no revoke) -->
+    <div class="overlay" id="overlayViewCPA">
+        <div class="modal" style="width:680px">
+            <div class="modal-header">
+                <span class="modal-title">🔑 CPA Detail</span>
+                <button class="close-btn" onclick="closeModal('overlayViewCPA')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                    <div class="form-row"><label>Company</label><input class="input input-readonly" id="viewCPAComp" readonly></div>
+                    <div class="form-row"><label>Tax ID</label><input class="input input-readonly mono" id="viewCPATax" readonly></div>
+                    <div class="form-row"><label>CPA ID</label><input class="input input-readonly mono" id="viewCPAId" readonly></div>
+                    <div class="form-row"><label>Application</label><input class="input input-readonly" id="viewCPAApp" readonly></div>
+                    <div class="form-row"><label>Provider</label><input class="input input-readonly" id="viewCPAProvider" readonly></div>
+                    <div class="form-row"><label>CPA Expire Date</label><input class="input input-readonly" id="viewCPAExpire" readonly></div>
+                    <div class="form-row"><label>Status</label><input class="input input-readonly" id="viewCPAStatus" readonly></div>
+                    <div class="form-row"><label>Days Remaining</label><input class="input input-readonly" id="viewCPADays" readonly></div>
+                    <div class="form-row"><label>Created Date</label><input class="input input-readonly" id="viewCPACreated" readonly></div>
+                    <div class="form-row"><label>Updated Date</label><input class="input input-readonly" id="viewCPAUpdated" readonly></div>
+                </div>
+            </div>
+            <!-- No footer close button; user uses X at top -->
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" style="position:fixed;bottom:24px;right:24px;background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);padding:12px 18px;border-radius:8px;font-size:13px;color:var(--text);box-shadow:0 8px 24px rgba(0,0,0,.12);transform:translateY(80px);opacity:0;transition:all .25s;z-index:9999;display:flex;align-items:center;gap:8px"></div>
+
+    <script>
+        // ═══════════════════════════════════════════════════════
+        //  DATA
+        // ═══════════════════════════════════════════════════════
+        let apps = [{
+            id: 1,
+            name: 'EXAT SmartTax',
+            protocol: 'API',
+            status: 'Active',
+            companies: ['EXATHQ', 'EXATDR'],
+            created: '01/01/2025 09:30',
+            updated: '20/03/2026 10:59',
+            url: 'https://api.exat.co.th/smarttax',
+            headers: [
+                ['Authorization', 'Bearer eyJhbGciEXAT']
+            ],
+            tokens: [{
+                host: '10.10.1.5',
+                token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.EXAT.XXXXXXXX',
+                status: 'Active',
+                created: '24/03/2026'
+            }]
+        }, {
+            id: 2,
+            name: 'EXAT Branch Tax',
+            protocol: 'Message Queue',
+            status: 'Inactive',
+            companies: ['EXATM4'],
+            created: '01/01/2025 09:30',
+            updated: '20/02/2026 10:59',
+            mqUrl: 'amqp://exat:pass@rabbitmq.exat.co.th:5672//',
+            tokens: []
+        }, {
+            id: 3,
+            name: 'TISCO SmartTax',
+            protocol: 'API',
+            status: 'Active',
+            companies: ['TISCO'],
+            created: '02/14/2025 10:40',
+            updated: '01/01/2026 22:26',
+            url: 'https://api.tisco.co.th/tax',
+            headers: [
+                ['X-Api-Key', 'TISCO-KEY-XXXX']
+            ],
+            tokens: []
+        }, {
+            id: 4,
+            name: 'AOT SmartTax',
+            protocol: 'API',
+            status: 'Inactive',
+            companies: ['AOT'],
+            created: '03/24/2025 08:30',
+            updated: '03/24/2025 09:00',
+            url: 'https://app.aotexample.com',
+            headers: [
+                ['Authorization', 'Bearer eyJhebxmlAOTsmartTax']
+            ],
+            tokens: []
+        }, ];
+
+        let companies = [{
+            id: 1,
+            name: 'EXATHQ',
+            taxId: '0994000165420',
+            email: 'tax@exat.co.th',
+            rdUrl: 'https://rdservice.rd.go.th/exathq',
+            app: 'EXAT SmartTax',
+            status: 'Active',
+            cpaRemaining: '283 days',
+            created: '01/01/2025 09:35',
+            updated: '20/03/2026 11:10'
+        }, {
+            id: 2,
+            name: 'EXATDR',
+            taxId: '0994000165421',
+            email: 'tax.dr@exat.co.th',
+            rdUrl: 'https://rdservice.rd.go.th/exatdr',
+            app: 'EXAT SmartTax',
+            status: 'Active',
+            cpaRemaining: '283 days',
+            created: '01/01/2025 09:35',
+            updated: '01/01/2026 11:10'
+        }, {
+            id: 3,
+            name: 'EXATM4',
+            taxId: '0994000165422',
+            email: 'tax.m4@exat.co.th',
+            rdUrl: 'https://rdservice.rd.go.th/exatm4',
+            app: 'EXAT Branch Tax',
+            status: 'Inactive',
+            cpaRemaining: 'Expired',
+            created: '01/01/2025 09:35',
+            updated: '01/01/2025 11:10'
+        }, {
+            id: 4,
+            name: 'TISCO',
+            taxId: '0107539000171',
+            email: 'tax@tisco.co.th',
+            rdUrl: 'https://rdservice.rd.go.th/tisco',
+            app: 'TISCO SmartTax',
+            status: 'Active',
+            cpaRemaining: 'Expired',
+            created: '02/14/2025 10:40',
+            updated: '01/01/2026 22:26'
+        }, {
+            id: 5,
+            name: 'AOT',
+            taxId: '0107545000292',
+            email: 'tax@airportthai.co.th',
+            rdUrl: 'https://rdservice.rd.go.th/aot',
+            app: 'AOT SmartTax',
+            status: 'Inactive',
+            cpaRemaining: 'Expired',
+            created: '03/24/2025 08:30',
+            updated: '03/24/2025 09:00'
+        }, ];
+
+        let cpas = [{
+            id: 1,
+            cpaId: 'CPA-2025-001',
+            company: 'ABC Co.,Ltd',
+            taxId: '1055555551839',
+            app: 'EXAT SmartTax',
+            provider: 'Host to Host',
+            expire: '31/12/2026',
+            status: 'Active',
+            daysRemaining: 280,
+            created: '01/01/2025 09:35',
+            updated: '20/03/2026 09:00'
+        }, {
+            id: 2,
+            cpaId: 'CPA-2025-002',
+            company: 'DEF Co.,Ltd',
+            taxId: '1033333335812',
+            app: 'TISCO SmartTax',
+            provider: 'BNG Service Provider',
+            expire: '31/12/2024',
+            status: 'Expired',
+            daysRemaining: 0,
+            created: '01/01/2025 09:35',
+            updated: '31/12/2024 08:00'
+        }, {
+            id: 3,
+            cpaId: 'CPA-2025-003',
+            company: 'EXATHQ',
+            taxId: '0994000165420',
+            app: 'EXAT SmartTax',
+            provider: 'Host to Host',
+            expire: '31/12/2026',
+            status: 'Active',
+            daysRemaining: 283,
+            created: '01/01/2025 09:35',
+            updated: '20/03/2026 10:30'
+        }, {
+            id: 4,
+            cpaId: 'CPA-2025-004',
+            company: 'EXATDR',
+            taxId: '0994000165421',
+            app: 'EXAT SmartTax',
+            provider: 'Host to Host',
+            expire: '31/12/2026',
+            status: 'Active',
+            daysRemaining: 283,
+            created: '01/01/2025 09:35',
+            updated: '20/03/2026 10:30'
+        }, {
+            id: 5,
+            cpaId: 'CPA-2025-005',
+            company: 'EXATM4',
+            taxId: '0994000165422',
+            app: 'EXAT Branch Tax',
+            provider: 'UIH Service Provider',
+            expire: '31/12/2024',
+            status: 'Expired',
+            daysRemaining: 0,
+            created: '01/01/2025 09:35',
+            updated: '31/12/2024 08:00'
+        }, {
+            id: 6,
+            cpaId: 'CPA-2025-006',
+            company: 'TISCO',
+            taxId: '0107539000171',
+            app: 'TISCO SmartTax',
+            provider: 'BNG Service Provider',
+            expire: '31/05/2025',
+            status: 'Expired',
+            daysRemaining: 0,
+            created: '02/14/2025 10:40',
+            updated: '31/05/2025 08:00'
+        }, {
+            id: 7,
+            cpaId: 'CPA-2025-007',
+            company: 'AOT',
+            taxId: '0107545000292',
+            app: 'AOT SmartTax',
+            provider: 'Host to Host',
+            expire: '10/04/2026',
+            status: 'Expiring Soon',
+            daysRemaining: 15,
+            created: '03/24/2025 08:30',
+            updated: '24/03/2026 09:00'
+        }, ];
+
+        const dailyData = [{
+            date: '27/03/2026',
+            app: 'EXAT SmartTax',
+            company: 'EXATHQ',
+            taxId: '0994000165420',
+            total: 850,
+            success: 850,
+            failed: 0,
+            status: 'Success',
+            submittedAt: '27/03/2026 08:05'
+        }, {
+            date: '27/03/2026',
+            app: 'EXAT SmartTax',
+            company: 'EXATDR',
+            taxId: '0994000165421',
+            total: 620,
+            success: 618,
+            failed: 2,
+            status: 'Failed',
+            submittedAt: '27/03/2026 08:10'
+        }, {
+            date: '27/03/2026',
+            app: 'TISCO SmartTax',
+            company: 'TISCO',
+            taxId: '0107539000171',
+            total: 2300,
+            success: 2300,
+            failed: 0,
+            status: 'Success',
+            submittedAt: '27/03/2026 08:30'
+        }, {
+            date: '26/03/2026',
+            app: 'EXAT SmartTax',
+            company: 'EXATHQ',
+            taxId: '0994000165420',
+            total: 780,
+            success: 780,
+            failed: 0,
+            status: 'Success',
+            submittedAt: '26/03/2026 08:05'
+        }, {
+            date: '26/03/2026',
+            app: 'EXAT SmartTax',
+            company: 'EXATDR',
+            taxId: '0994000165421',
+            total: 590,
+            success: 590,
+            failed: 0,
+            status: 'Success',
+            submittedAt: '26/03/2026 08:12'
+        }, {
+            date: '26/03/2026',
+            app: 'TISCO SmartTax',
+            company: 'TISCO',
+            taxId: '0107539000171',
+            total: 2150,
+            success: 2148,
+            failed: 2,
+            status: 'Failed',
+            submittedAt: '26/03/2026 08:35'
+        }, {
+            date: '25/03/2026',
+            app: 'EXAT SmartTax',
+            company: 'EXATHQ',
+            taxId: '0994000165420',
+            total: 810,
+            success: 810,
+            failed: 0,
+            status: 'Success',
+            submittedAt: '25/03/2026 08:00'
+        }, {
+            date: '25/03/2026',
+            app: 'TISCO SmartTax',
+            company: 'TISCO',
+            taxId: '0107539000171',
+            total: 2200,
+            success: 2200,
+            failed: 0,
+            status: 'Success',
+            submittedAt: '25/03/2026 08:30'
+        }, {
+            date: '24/03/2026',
+            app: 'EXAT SmartTax',
+            company: 'EXATHQ',
+            taxId: '0994000165420',
+            total: 760,
+            success: 755,
+            failed: 5,
+            status: 'Failed',
+            submittedAt: '24/03/2026 08:05'
+        }, {
+            date: '24/03/2026',
+            app: 'EXAT SmartTax',
+            company: 'EXATDR',
+            taxId: '0994000165421',
+            total: 540,
+            success: 540,
+            failed: 0,
+            status: 'Success',
+            submittedAt: '24/03/2026 08:10'
+        }, {
+            date: '23/03/2026',
+            app: 'EXAT SmartTax',
+            company: 'EXATHQ',
+            taxId: '0994000165420',
+            total: 820,
+            success: 820,
+            failed: 0,
+            status: 'Success',
+            submittedAt: '23/03/2026 08:00'
+        }, {
+            date: '23/03/2026',
+            app: 'TISCO SmartTax',
+            company: 'TISCO',
+            taxId: '0107539000171',
+            total: 2100,
+            success: 2100,
+            failed: 0,
+            status: 'Success',
+            submittedAt: '23/03/2026 08:30'
+        }, ];
+
+        const monthlyData = [{
+            year: 2026,
+            month: 3,
+            monthName: 'มีนาคม',
+            app: 'EXAT SmartTax',
+            company: 'EXATHQ',
+            taxId: '0994000165420',
+            total: 25600,
+            success: 25572,
+            failed: 28,
+            lastSubmit: '27/03/2026 08:15'
+        }, {
+            year: 2026,
+            month: 3,
+            monthName: 'มีนาคม',
+            app: 'EXAT SmartTax',
+            company: 'EXATDR',
+            taxId: '0994000165421',
+            total: 18200,
+            success: 18180,
+            failed: 20,
+            lastSubmit: '27/03/2026 08:17'
+        }, {
+            year: 2026,
+            month: 3,
+            monthName: 'มีนาคม',
+            app: 'TISCO SmartTax',
+            company: 'TISCO',
+            taxId: '0107539000171',
+            total: 68000,
+            success: 67990,
+            failed: 10,
+            lastSubmit: '27/03/2026 09:00'
+        }, {
+            year: 2026,
+            month: 2,
+            monthName: 'กุมภาพันธ์',
+            app: 'EXAT SmartTax',
+            company: 'EXATHQ',
+            taxId: '0994000165420',
+            total: 22400,
+            success: 22400,
+            failed: 0,
+            lastSubmit: '28/02/2026 08:10'
+        }, {
+            year: 2026,
+            month: 2,
+            monthName: 'กุมภาพันธ์',
+            app: 'EXAT SmartTax',
+            company: 'EXATDR',
+            taxId: '0994000165421',
+            total: 16800,
+            success: 16800,
+            failed: 0,
+            lastSubmit: '28/02/2026 08:12'
+        }, {
+            year: 2026,
+            month: 2,
+            monthName: 'กุมภาพันธ์',
+            app: 'TISCO SmartTax',
+            company: 'TISCO',
+            taxId: '0107539000171',
+            total: 58000,
+            success: 57950,
+            failed: 50,
+            lastSubmit: '28/02/2026 09:05'
+        }, {
+            year: 2026,
+            month: 1,
+            monthName: 'มกราคม',
+            app: 'EXAT SmartTax',
+            company: 'EXATHQ',
+            taxId: '0994000165420',
+            total: 26000,
+            success: 26000,
+            failed: 0,
+            lastSubmit: '31/01/2026 08:20'
+        }, {
+            year: 2026,
+            month: 1,
+            monthName: 'มกราคม',
+            app: 'EXAT SmartTax',
+            company: 'EXATDR',
+            taxId: '0994000165421',
+            total: 19500,
+            success: 19480,
+            failed: 20,
+            lastSubmit: '31/01/2026 08:22'
+        }, {
+            year: 2026,
+            month: 1,
+            monthName: 'มกราคม',
+            app: 'TISCO SmartTax',
+            company: 'TISCO',
+            taxId: '0107539000171',
+            total: 72000,
+            success: 72000,
+            failed: 0,
+            lastSubmit: '31/01/2026 09:00'
+        }, {
+            year: 2025,
+            month: 12,
+            monthName: 'ธันวาคม',
+            app: 'EXAT SmartTax',
+            company: 'EXATHQ',
+            taxId: '0994000165420',
+            total: 28000,
+            success: 28000,
+            failed: 0,
+            lastSubmit: '31/12/2025 08:15'
+        }, {
+            year: 2025,
+            month: 12,
+            monthName: 'ธันวาคม',
+            app: 'EXAT SmartTax',
+            company: 'EXATDR',
+            taxId: '0994000165421',
+            total: 20000,
+            success: 19990,
+            failed: 10,
+            lastSubmit: '31/12/2025 08:18'
+        }, {
+            year: 2025,
+            month: 12,
+            monthName: 'ธันวาคม',
+            app: 'TISCO SmartTax',
+            company: 'TISCO',
+            taxId: '0107539000171',
+            total: 74000,
+            success: 74000,
+            failed: 0,
+            lastSubmit: '31/12/2025 09:10'
+        }, ];
+
+        let currentAppId = null,
+            currentCompId = null,
+            currentCPAId = null;
+        let appEditMode = false,
+            compEditMode = false;
+        let appEditSource = 'view'; // 'view' or 'list'
+
+        // ═══════════════════════════════════════════════════════
+        //  PAGINATION
+        // ═══════════════════════════════════════════════════════
+        const pagers = {};
+
+        function initPager(key, containerId, perPage = 10) {
+            pagers[key] = {
+                page: 1,
+                perPage,
+                data: [],
+                containerId,
+                renderFn: null
+            }
+        }
+
+        function setPagerData(key, data, renderFn) {
+            const p = pagers[key];
+            if (!p) return renderFn(data);
+            p.data = data;
+            p.page = 1;
+            p.renderFn = renderFn;
+            _renderPager(key);
+        }
+
+        function _renderPager(key) {
+            const p = pagers[key];
+            if (!p || !p.renderFn) return;
+            const s = (p.page - 1) * p.perPage;
+            p.renderFn(p.data.slice(s, s + p.perPage));
+            _updatePagUI(key);
+        }
+
+        function _updatePagUI(key) {
+            const p = pagers[key];
+            if (!p) return;
+            const el = document.getElementById(p.containerId);
+            if (!el) return;
+            const tot = p.data.length,
+                pages = Math.max(1, Math.ceil(tot / p.perPage));
+            const s = tot ? (p.page - 1) * p.perPage + 1 : 0,
+                e = Math.min(p.page * p.perPage, tot);
+            el.innerHTML = `<div class="pag-bar">
+    <span class="pag-label">แถวต่อหน้า</span>
+    <select class="pag-sel" onchange="changePPP('${key}',parseInt(this.value))">
+      ${[10,25,50,100].map(n=>`<option value="${n}"${p.perPage==n?' selected':''}>${n}</option>`).join('')}
+    </select>
+    <button class="pag-btn" onclick="goPage('${key}',1)" ${p.page<=1?'disabled':''}>«</button>
+    <button class="pag-btn" onclick="goPage('${key}',${p.page-1})" ${p.page<=1?'disabled':''}>‹</button>
+    <span class="pag-cur">${p.page} / ${pages}</span>
+    <button class="pag-btn" onclick="goPage('${key}',${p.page+1})" ${p.page>=pages?'disabled':''}>›</button>
+    <button class="pag-btn" onclick="goPage('${key}',${pages})" ${p.page>=pages?'disabled':''}>»</button>
+    <span class="pag-info">${s}–${e} จาก ${tot.toLocaleString()} รายการ</span>
+  </div>`;
+}
+
+// Sync PPP select with pager when pager changes
+function _syncPPPSelect(key){
+  const sel = document.getElementById(key+'PPP');
+  if(sel) sel.value = pagers[key]?.perPage || 10;
+}
+function changePPP(key,val){const p=pagers[key];p.perPage=val;p.page=1;_renderPager(key)}
+function goPage(key,pg){const p=pagers[key];const pages=Math.max(1,Math.ceil(p.data.length/p.perPage));p.page=Math.max(1,Math.min(pg,pages));_renderPager(key)}
+
+// ═══════════════════════════════════════════════════════
+//  NOTIFICATION
+// ═══════════════════════════════════════════════════════
+let notifList=[];
+function buildNotifications(){
+  notifList=[];
+  cpas.forEach(c=>{
+    if(c.status==='Expired')notifList.push({type:'danger',icon:'⛔',title:`CPA Expired: ${c.company}`,sub:`CPA ${c.cpaId} หมดอายุแล้ว (${c.expire})`,read:false});
+    else if(c.status==='Expiring Soon')notifList.push({type:'warn',icon:'⚠️',title:`CPA กำลังหมดอายุ: ${c.company}`,sub:`เหลืออีก ${c.daysRemaining} วัน (${c.expire})`,read:false});
+  });
+  renderNotifications();
+}
+function renderNotifications(){
+  const el=document.getElementById('notifList');
+  const badge=document.getElementById('notifBadge');
+  const unread=notifList.filter(n=>!n.read).length;
+  badge.textContent=unread; badge.style.display=unread?'flex':'none';
+  if(!notifList.length){el.innerHTML='<div class="notif-empty">ไม่มีการแจ้งเตือน ✓</div>';return}
+  el.innerHTML=notifList.map((n,i)=>`
+    <div class="notif-item${n.read?'':' unread'}" onclick="readNotif(${i})">
+      <div class="notif-item-icon ${n.type}">${n.icon}</div>
+      <div class="notif-item-body">
+        <div class="notif-item-title">${n.title}</div>
+        <div class="notif-item-sub">${n.sub}</div>
+      </div>
+    </div>`).join('');
+}
+function readNotif(i){notifList[i].read=true;renderNotifications()}
+function markAllRead(){notifList.forEach(n=>n.read=true);renderNotifications()}
+function toggleNotif(e){
+  e.stopPropagation();
+  document.getElementById('notifPanel').classList.toggle('open');
+}
+document.addEventListener('click',e=>{
+  if(!document.getElementById('notifWrap').contains(e.target))
+    document.getElementById('notifPanel').classList.remove('open');
+  document.querySelectorAll('.export-menu.open').forEach(m=>{
+    if(!m.closest('.export-wrap').contains(e.target))m.classList.remove('open');
+  });
+});
+
+// ═══════════════════════════════════════════════════════
+//  EXPORT MENU
+// ═══════════════════════════════════════════════════════
+function toggleExportMenu(id){
+  const m=document.getElementById(id);
+  document.querySelectorAll('.export-menu.open').forEach(x=>{if(x.id!==id)x.classList.remove('open')});
+  m.classList.toggle('open');
+  event.stopPropagation();
+}
+
+// ═══════════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════════
+function navigate(page){
+  document.querySelectorAll('.page-view').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  const navEl=document.getElementById('nav-'+page);
+  if(navEl)navEl.classList.add('active');
+  const labels={application:'Application',company:'Company',cpa:'CPA',daily:'Daily RD Report',monthly:'Monthly RD Report'};
+  document.getElementById('breadcrumbCurrent').textContent=labels[page]||page;
+  if(page==='application')renderApps();
+  if(page==='company'){renderCompanies();populateAppFilter()}
+  if(page==='cpa')renderCPAs();
+  if(page==='daily')renderDailyReport();
+  if(page==='monthly')renderMonthlyReport();
+}
+function toggleRecon(){
+  const sub=document.getElementById('reconSub'),arrow=document.getElementById('reconArrow');
+  sub.style.display=sub.style.display==='none'?'block':'none';
+  arrow.textContent=sub.style.display==='none'?'▶':'▼';
+}
+
+// ═══════════════════════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════════════════════
+function showToast(msg,type='success'){
+  const t=document.getElementById('toast');
+  t.style.borderLeftColor=type==='success'?'var(--accent)':type==='danger'?'var(--danger)':'var(--warn)';
+  t.innerHTML=(type==='success'?'✅':type==='danger'?'🗑️':'⚠️')+' '+msg;
+  t.style.opacity='1';t.style.transform='translateY(0)';
+  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(80px)'},2500);
+}
+
+// ═══════════════════════════════════════════════════════
+//  MODAL HELPERS
+// ═══════════════════════════════════════════════════════
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+document.querySelectorAll('.overlay').forEach(o=>{
+  o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open')})
+});
+
+// ═══════════════════════════════════════════════════════
+//  APPLICATION — RENDER
+// ═══════════════════════════════════════════════════════
+function renderApps(list){
+  const data=list||apps;
+  setPagerData('apps',data,rows=>{
+    const tbody=document.getElementById('appTableBody');
+    if(!rows.length){tbody.innerHTML='<tr class="empty-row"><td colspan="7">ไม่พบข้อมูล Application</td></tr>';return}
+    tbody.innerHTML=rows.map(a=>`
+      <tr>
+        <td><strong>${a.name}</strong></td>
+        <td><span class="badge ${a.protocol==='API'?'badge-api':'badge-mq'}">${a.protocol}</span></td>
+        <td><div class="tag-list">${a.companies.map(c=>`<span class="tag">${c}</span>`).join('')||'<span style="color:var(--text3)">—</span>'}</div></td>
+        <td class="date-cell mono">${a.created}</td>
+        <td class="date-cell mono">${a.updated}</td>
+        <td>
+          <div class="status-toggle-cell">
+            <span class="status-pill ${a.status==='Active'?'is-active':'is-inactive'}" id="asp_${a.id}">${a.status}</span>
+            <label class="toggle-sw" title="สลับ Active / Inactive">
+              <input type="checkbox" ${a.status==='Active'?'checked':''} onchange="toggleAppStatus(${a.id},this.checked)">
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+        </td>
+        <td>
+          <div style="display:flex;gap:4px">
+            <button class="btn btn-outline btn-xs" onclick="openViewApp(${a.id})">View</button>
+            <button class="btn btn-primary btn-xs" onclick="openEditApp(${a.id})">Edit</button>
+          </div>
+        </td>
+      </tr>`).join('');
+  });
+}
+
+function filterApps(){
+  const name=document.getElementById('searchAppName').value.toLowerCase();
+  const proto=document.getElementById('searchProtocol').value;
+  const status=document.getElementById('searchStatus').value;
+  renderApps(apps.filter(a=>(!name||a.name.toLowerCase().includes(name))&&(!proto||a.protocol===proto)&&(!status||a.status===status)));
+}
+function resetSearchApp(){
+  ['searchAppName','searchProtocol','searchStatus'].forEach(id=>document.getElementById(id).value='');
+  renderApps();
+}
+
+function toggleAppStatus(id,checked){
+  const a=apps.find(x=>x.id===id); if(!a)return;
+  a.status=checked?'Active':'Inactive';
+  a.updated=fmtDate(new Date());
+  const pill=document.getElementById('asp_'+id);
+  if(pill){pill.textContent=a.status;pill.className='status-pill '+(checked?'is-active':'is-inactive')}
+  else renderApps();
+  showToast(`"${a.name}" เปลี่ยนเป็น ${a.status}`);
+}
+
+// ═══════════════════════════════════════════════════════
+//  APPLICATION — MODAL
+// ═══════════════════════════════════════════════════════
+function _loadAppToModal(a){
+  document.getElementById('viewAppName').value=a.name;
+  document.getElementById('viewAppStatus').value=a.status;
+  document.getElementById('viewAppProtocol').value=a.protocol;
+  if(a.protocol==='API'){
+    document.getElementById('viewApiConfig').style.display='block';
+    document.getElementById('viewMqConfig').style.display='none';
+    document.getElementById('viewAppUrl').value=a.url||'';
+    renderViewHeaders(a.headers||[]);
+  } else {
+    document.getElementById('viewApiConfig').style.display='none';
+    document.getElementById('viewMqConfig').style.display='block';
+    document.getElementById('viewMqUrl').value=a.mqUrl||'';
+  }
+  renderTokenTable(a.tokens||[]);
+  renderAppCompTable(a.companies||[],a.name);
+}
+
+function setAppViewMode(){
+  appEditMode=false;
+  document.getElementById('appDetailModalTitle').textContent='📄 Application Detail';
+  ['viewAppName','viewAppUrl','viewMqUrl'].forEach(id=>{const e=document.getElementById(id);if(e){e.readOnly=true;e.classList.add('input-readonly')}});
+  ['viewAppStatus','viewAppProtocol'].forEach(id=>{const e=document.getElementById(id);e.disabled=true;e.classList.add('input-readonly')});
+  document.querySelectorAll('#viewHeadersList input').forEach(e=>{e.readOnly=true;e.classList.add('input-readonly')});
+  document.querySelectorAll('#viewHeadersList .del-hdr-btn').forEach(b=>b.style.display='none');
+  document.getElementById('viewAddHeaderBtn').style.display='none';
+  document.getElementById('btnEditApp').style.display='inline-flex';
+  document.getElementById('appEditActions').style.display='none';
+  document.getElementById('compRemoveCol').style.display='none';
+  // Token: Delete col hidden in view mode; Generate ALWAYS visible
+  document.getElementById('tokenActionCol').style.display='none';
+  // btnGenToken always visible — do NOT hide it
+  const a=apps.find(x=>x.id===currentAppId);
+  if(a){
+    renderTokenTable(a.tokens||[],false);
+    renderAppCompTable(a.companies||[],a.name,false);
+  }
+}
+
+function setAppEditMode(){
+  appEditMode=true;
+  document.getElementById('appDetailModalTitle').textContent='✏ Edit Application Detail';
+  ['viewAppName','viewAppUrl','viewMqUrl'].forEach(id=>{const e=document.getElementById(id);if(e){e.readOnly=false;e.classList.remove('input-readonly')}});
+  ['viewAppStatus','viewAppProtocol'].forEach(id=>{const e=document.getElementById(id);e.disabled=false;e.classList.remove('input-readonly')});
+  document.querySelectorAll('#viewHeadersList input').forEach(e=>{e.readOnly=false;e.classList.remove('input-readonly')});
+  document.querySelectorAll('#viewHeadersList .del-hdr-btn').forEach(b=>b.style.display='inline-flex');
+  document.getElementById('viewAddHeaderBtn').style.display='block';
+  document.getElementById('btnEditApp').style.display='none';
+  document.getElementById('appEditActions').style.display='flex';
+  document.getElementById('compRemoveCol').style.display='';
+  // Token: Delete col shown in edit mode; Generate ALWAYS visible
+  document.getElementById('tokenActionCol').style.display='';
+  // btnGenToken always visible — do NOT hide it
+  const a=apps.find(x=>x.id===currentAppId);
+  if(a){
+    renderTokenTable(a.tokens||[],true);
+    renderAppCompTable(a.companies||[],a.name,true);
+  }
+}
+
+function openViewApp(id){
+  currentAppId=id; appEditSource='view';
+  const a=apps.find(x=>x.id===id); if(!a)return;
+  _loadAppToModal(a);
+  setAppViewMode();
+  openModal('overlayViewApp');
+}
+
+function openEditApp(id){
+  currentAppId=id; appEditSource='list';
+  const a=apps.find(x=>x.id===id); if(!a)return;
+  _loadAppToModal(a);
+  setAppEditMode();
+  openModal('overlayViewApp');
+}
+
+function enterAppEditMode(){appEditSource='view';setAppEditMode()}
+
+function cancelAppEdit(){
+  const a=apps.find(x=>x.id===currentAppId); if(!a)return;
+  _loadAppToModal(a); // restore
+  setAppViewMode();
+}
+
+function saveApp(){
+  const a=apps.find(x=>x.id===currentAppId); if(!a)return;
+  a.name=document.getElementById('viewAppName').value;
+  a.status=document.getElementById('viewAppStatus').value;
+  const newProto=document.getElementById('viewAppProtocol').value;
+  a.protocol=newProto;
+  if(newProto==='API'){
+    a.url=document.getElementById('viewAppUrl').value;
+    const hdrs=[];
+    document.querySelectorAll('#viewHeadersList .hdr-pair').forEach(row=>{
+      const inputs=row.querySelectorAll('input');
+      if(inputs[0].value)hdrs.push([inputs[0].value,inputs[1].value]);
+    });
+    a.headers=hdrs;
+  } else {a.mqUrl=document.getElementById('viewMqUrl').value}
+  a.updated=fmtDate(new Date());
+  renderApps(); setAppViewMode();
+  showToast(`บันทึก Application "${a.name}" สำเร็จ`);
+}
+
+function openCreateApp(){
+  ['newAppName','newAppUrl','newMqUrl'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('newAppProtocol').value='';
+  document.getElementById('newApiConfig').style.display='none';
+  document.getElementById('newMqConfig').style.display='none';
+  document.getElementById('newHeadersList').innerHTML='';
+  openModal('overlayCreateApp');
+}
+
+function onProtocolChange(ctx){
+  const val=document.getElementById(ctx==='new'?'newAppProtocol':'viewAppProtocol').value;
+  if(ctx==='new'){
+    document.getElementById('newApiConfig').style.display=val==='API'?'block':'none';
+    document.getElementById('newMqConfig').style.display=val==='Message Queue'?'block':'none';
+  } else {
+    document.getElementById('viewApiConfig').style.display=val==='API'?'block':'none';
+    document.getElementById('viewMqConfig').style.display=val==='Message Queue'?'block':'none';
+  }
+}
+
+function addHeader(ctx){
+  const container=document.getElementById(ctx==='new'?'newHeadersList':'viewHeadersList');
+  const row=document.createElement('div');
+  row.className='header-pair hdr-pair'; row.style.marginBottom='8px';
+  const ro=ctx==='view'&&!appEditMode?'readonly':'';
+  row.innerHTML=`<input class="input${ro?' input-readonly':''}" ${ro} placeholder="Header Key"><input class="input${ro?' input-readonly':''}" ${ro} placeholder="Header Value"><button class="btn btn-danger btn-sm del-hdr-btn" onclick="this.closest('.hdr-pair').remove()">— Del</button>`;
+  container.appendChild(row);
+}
+
+function renderViewHeaders(headers){
+  document.getElementById('viewHeadersList').innerHTML=headers.map((h,i)=>`
+    <div class="header-pair hdr-pair" style="margin-bottom:8px" data-idx="${i}">
+      <input class="input input-readonly" value="${h[0]}" readonly placeholder="Header Key">
+      <input class="input input-readonly" value="${h[1]}" readonly placeholder="Header Value">
+      <button class="btn btn-danger btn-sm del-hdr-btn" style="display:none" onclick="this.closest('.hdr-pair').remove()">— Del</button>
+    </div>`).join('');
+}
+
+function createApp(){
+  const name=document.getElementById('newAppName').value.trim();
+  const proto=document.getElementById('newAppProtocol').value;
+  if(!name||!proto){showToast('กรุณากรอกข้อมูลให้ครบ','warn');return}
+  const headers=[];
+  document.querySelectorAll('#newHeadersList .hdr-pair').forEach(row=>{
+    const inputs=row.querySelectorAll('input');
+    if(inputs[0].value)headers.push([inputs[0].value,inputs[1].value]);
+  });
+  const dateStr=fmtDate(new Date());
+  apps.push({id:Date.now(),name,protocol:proto,status:'Active',companies:[],created:dateStr,updated:dateStr,
+    url:document.getElementById('newAppUrl').value,mqUrl:document.getElementById('newMqUrl').value,headers,tokens:[]});
+  renderApps(); populateAppFilter(); closeModal('overlayCreateApp');
+  showToast(`สร้าง Application "${name}" สำเร็จ`);
+}
+
+// ═══════════════════════════════════════════════════════
+//  TOKEN
+// ═══════════════════════════════════════════════════════
+function renderTokenTable(tokens,canEdit=false){
+  const tbody=document.getElementById('tokenTableBody');
+  const actionCol=document.getElementById('tokenActionCol');
+  // Action column (Delete) visible only in edit mode
+  if(actionCol) actionCol.style.display = canEdit ? '' : 'none';
+  if(!tokens.length){tbody.innerHTML=`<tr class="empty-row"><td colspan="5">ยังไม่มี Token — กด ⚡ Generate Token เพื่อสร้าง</td></tr>`;return}
+  tbody.innerHTML=tokens.map((t,i)=>`
+    <tr>
+      <td class="mono">${t.host}</td>
+      <td><div class="token-cell">
+        <span class="token-mask" id="tm${i}">••••••••••••••••••••</span>
+        <button class="btn btn-ghost btn-xs" onclick="viewToken(${i})">View</button>
+        <button class="btn btn-ghost btn-xs" onclick="copyToken(${i})">Copy</button>
+      </div></td>
+      <td><span class="badge ${t.status==='Active'?'badge-active':'badge-inactive'}">${t.status}</span></td>
+      <td class="date-cell mono">${t.created}</td>
+      <td>${canEdit?`<button class="btn btn-danger btn-xs" onclick="deleteToken(${i})">— Delete</button>`:''}</td>
+    </tr>`).join('');
+  document.getElementById('tokenTableBody')._tokens=tokens;
+}
+
+function viewToken(i){
+  const tokens=document.getElementById('tokenTableBody')._tokens;
+  const el=document.getElementById('tm'+i);
+  if(el.textContent.includes('•')){el.textContent=tokens[i].token;el.style.color='var(--primary)'}
+  else{el.textContent='••••••••••••••••••••';el.style.color=''}
+}
+function copyToken(i){
+  const tokens=document.getElementById('tokenTableBody')._tokens;
+  navigator.clipboard.writeText(tokens[i].token).catch(()=>{});
+  showToast('คัดลอก Token แล้ว');
+}
+function deleteToken(i){
+  const a=apps.find(x=>x.id===currentAppId); if(!a)return;
+  a.tokens.splice(i,1); renderTokenTable(a.tokens,true);
+  showToast('ลบ Token แล้ว','danger');
+}
+function openGenerateToken(){
+  document.getElementById('genTokenHost').value='';
+  document.getElementById('genTokenExpiry').value='';
+  openModal('overlayGenToken');
+}
+function generateToken(){
+  const host=document.getElementById('genTokenHost').value.trim();
+  if(!host){showToast('กรุณากรอก Host','warn');return}
+  const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const token='eyJ'+Array.from({length:60},()=>chars[Math.floor(Math.random()*chars.length)]).join('');
+  const a=apps.find(x=>x.id===currentAppId); if(!a)return;
+  const d=new Date();
+  a.tokens.push({host,token,status:'Active',created:`${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`});
+  renderTokenTable(a.tokens,appEditMode); closeModal('overlayGenToken');
+  showToast(`สร้าง Token สำหรับ ${host} สำเร็จ`);
+}
+
+// ═══════════════════════════════════════════════════════
+//  APP COMPANY TABLE — show ALL companies
+// ═══════════════════════════════════════════════════════
+function renderAppCompTable(compNames, appName, canEdit=false){
+  const tbody = document.getElementById('appCompTableBody');
+  const removeCol = document.getElementById('compRemoveCol');
+  if(removeCol) removeCol.style.display = canEdit ? '' : 'none';
+
+  // Only show companies actually linked to this application
+  const linked = companies.filter(c => compNames.includes(c.name));
+
+  if(!linked.length){
+    tbody.innerHTML=`<tr class="empty-row"><td colspan="8">ยังไม่มี Company ที่ผูกกับ Application นี้</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = linked.map(c => {
+    const statusCell = `
+      <div class="status-toggle-cell">
+        <span class="status-pill ${c.status==='Active'?'is-active':'is-inactive'}" id="acsp_${c.id}">${c.status}</span>
+        <label class="toggle-sw" title="สลับ Active / Inactive">
+          <input type="checkbox" ${c.status==='Active'?'checked':''} onchange="toggleCompStatusModal(${c.id},this.checked)">
+          <span class="toggle-track"></span>
+        </label>
+      </div>`;
+
+    const actionCell = canEdit
+      ? `<td><button class="btn btn-danger btn-xs" onclick="removeCompanyFromApp('${c.name}')">✕ Remove</button></td>`
+      : '<td></td>';
+
+    return `<tr>
+      <td><strong>${c.name}</strong></td>
+      <td class="mono">${c.taxId}</td>
+      <td>${c.app||'—'}</td>
+      <td class="${c.cpaRemaining==='Expired'?'cpa-expired':'cpa-ok'}">${c.cpaRemaining}</td>
+      <td class="date-cell mono">${c.created}</td>
+      <td class="date-cell mono">${c.updated}</td>
+      <td>${statusCell}</td>
+      ${actionCell}
+    </tr>`;
+  }).join('');
+}
+
+function toggleCompStatusModal(id, checked){
+  const c = companies.find(x=>x.id===id); if(!c) return;
+  c.status = checked?'Active':'Inactive'; c.updated = fmtDate(new Date());
+  const pill = document.getElementById('acsp_'+id);
+  if(pill){pill.textContent=c.status; pill.className='status-pill '+(checked?'is-active':'is-inactive')}
+  // Also update main list pill if visible
+  const mainPill = document.getElementById('csp_'+id);
+  if(mainPill){mainPill.textContent=c.status; mainPill.className='status-pill '+(checked?'is-active':'is-inactive')}
+  showToast(`"${c.name}" เปลี่ยนเป็น ${c.status}`);
+}
+
+function addCompanyToApp(compName){
+  const app = apps.find(x=>x.id===currentAppId); if(!app) return;
+  if(!app.companies.includes(compName)) app.companies.push(compName);
+  const comp = companies.find(c=>c.name===compName);
+  if(comp) comp.app = app.name;
+  app.updated = fmtDate(new Date());
+  renderAppCompTable(app.companies, app.name, appEditMode);
+  showToast(`เพิ่ม "${compName}" เข้า "${app.name}" สำเร็จ`);
+}
+
+function removeCompanyFromApp(compName){
+  const app=apps.find(x=>x.id===currentAppId); if(!app)return;
+  if(!confirm(`ยกเลิกการผูก "${compName}" ออกจาก "${app.name}"?`))return;
+  app.companies=app.companies.filter(n=>n!==compName);
+  const comp=companies.find(c=>c.name===compName);
+  if(comp && comp.app===app.name) comp.app='—';
+  app.updated=fmtDate(new Date());
+  renderAppCompTable(app.companies,app.name,appEditMode);
+  showToast(`ยกเลิกการผูก "${compName}" แล้ว`,'danger');
+}
+
+function openAssignCompany(){
+  const app=apps.find(x=>x.id===currentAppId); if(!app)return;
+  document.getElementById('assignAppName').textContent=app.name;
+  const available=companies.filter(c=>!c.app||c.app==='—'||!apps.find(a=>a.name===c.app));
+  const tbody=document.getElementById('assignCompTableBody');
+  const noData=document.getElementById('assignNoData');
+  if(!available.length){tbody.innerHTML='';noData.style.display='block'}
+  else{
+    noData.style.display='none';
+    tbody.innerHTML=available.map(c=>`
+      <tr style="cursor:pointer" onclick="toggleAssignRow(this,'${c.name}')">
+        <td><input type="checkbox" class="assign-check" data-name="${c.name}" style="cursor:pointer;width:15px;height:15px"></td>
+        <td><strong>${c.name}</strong></td><td class="mono">${c.taxId}</td>
+        <td><span class="badge ${c.status==='Active'?'badge-active':'badge-inactive'}">${c.status}</span></td>
+      </tr>`).join('');
+  }
+  openModal('overlayAssignCompany');
+}
+function toggleAssignRow(row,name){const cb=row.querySelector('.assign-check');cb.checked=!cb.checked;row.style.background=cb.checked?'var(--primary-dim)':''}
+function confirmAssignCompany(){
+  const app=apps.find(x=>x.id===currentAppId); if(!app)return;
+  const checked=[...document.querySelectorAll('.assign-check:checked')].map(cb=>cb.dataset.name);
+  if(!checked.length){showToast('กรุณาเลือก Company อย่างน้อย 1 รายการ','warn');return}
+  checked.forEach(name=>{
+    if(!app.companies.includes(name))app.companies.push(name);
+    const comp=companies.find(c=>c.name===name);
+    if(comp)comp.app=app.name;
+  });
+  renderAppCompTable(app.companies,app.name,true);
+  closeModal('overlayAssignCompany');
+  showToast(`Assign ${checked.length} Company เข้า "${app.name}" สำเร็จ`);
+}
+
+// ═══════════════════════════════════════════════════════
+//  COMPANY — RENDER
+// ═══════════════════════════════════════════════════════
+function renderCompanies(list){
+  const data=list||companies;
+  setPagerData('companies',data,rows=>{
+    const tbody=document.getElementById('compTableBody');
+    if(!rows.length){tbody.innerHTML='<tr class="empty-row"><td colspan="8">ไม่พบข้อมูล Company</td></tr>';return}
+    tbody.innerHTML=rows.map(c=>`
+      <tr>
+        <td><strong>${c.name}</strong></td>
+        <td class="mono">${c.taxId}</td>
+        <td>${c.app}</td>
+        <td class="${c.cpaRemaining==='Expired'?'cpa-expired':'cpa-ok'}">${c.cpaRemaining}</td>
+        <td class="date-cell mono">${c.created}</td>
+        <td class="date-cell mono">${c.updated}</td>
+        <td>
+          <div class="status-toggle-cell">
+            <span class="status-pill ${c.status==='Active'?'is-active':'is-inactive'}" id="csp_${c.id}">${c.status}</span>
+            <label class="toggle-sw" title="สลับ Active / Inactive">
+              <input type="checkbox" ${c.status==='Active'?'checked':''} onchange="toggleCompStatus(${c.id},this.checked)">
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+        </td>
+        <td>
+          <div style="display:flex;gap:4px">
+            <button class="btn btn-outline btn-xs" onclick="openViewComp(${c.id})">View</button>
+            <button class="btn btn-primary btn-xs" onclick="openEditComp(${c.id})">Edit</button>
+          </div>
+        </td>
+      </tr>`).join('');
+  });
+}
+
+function filterCompanies(){
+  const name=document.getElementById('searchCompName').value.toLowerCase();
+  const app=document.getElementById('searchCompApp').value;
+  const status=document.getElementById('searchCompStatus').value;
+  renderCompanies(companies.filter(c=>(!name||c.name.toLowerCase().includes(name))&&(!app||c.app===app)&&(!status||c.status===status)));
+}
+function resetSearchComp(){
+  ['searchCompName','searchCompApp','searchCompStatus'].forEach(id=>document.getElementById(id).value='');
+  renderCompanies();
+}
+function toggleCompStatus(id,checked){
+  const c=companies.find(x=>x.id===id); if(!c)return;
+  c.status=checked?'Active':'Inactive'; c.updated=fmtDate(new Date());
+  const pill=document.getElementById('csp_'+id);
+  if(pill){pill.textContent=c.status;pill.className='status-pill '+(checked?'is-active':'is-inactive')}
+  else renderCompanies();
+  showToast(`"${c.name}" เปลี่ยนเป็น ${c.status}`);
+}
+function populateAppFilter(){
+  ['searchCompApp','newCompApp'].forEach(selId=>{
+    const sel=document.getElementById(selId); if(!sel)return;
+    const isSearch=selId==='searchCompApp';
+    sel.innerHTML=isSearch?'<option value="">Application — All</option>':'<option value="">— Select Application —</option>';
+    apps.forEach(a=>{const opt=document.createElement('option');opt.value=a.name;opt.textContent=a.name;sel.appendChild(opt)});
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+//  COMPANY — MODAL
+// ═══════════════════════════════════════════════════════
+function _loadCompToModal(c){
+  document.getElementById('viewCompName').value=c.name;
+  document.getElementById('viewCompTax').value=c.taxId;
+  document.getElementById('viewCompEmail').value=c.email;
+  document.getElementById('viewCompRD').value=c.rdUrl;
+  document.getElementById('viewCompApp').value=c.app;
+  document.getElementById('viewCompStatus').value=c.status;
+  document.getElementById('viewCompCPA').value=c.cpaRemaining;
+}
+function setCompViewMode(){
+  compEditMode=false;
+  ['viewCompName','viewCompTax','viewCompEmail','viewCompRD','viewCompApp','viewCompCPA'].forEach(id=>{const e=document.getElementById(id);e.readOnly=true;e.classList.add('input-readonly')});
+  const s=document.getElementById('viewCompStatus');s.disabled=true;s.classList.add('input-readonly');
+  document.getElementById('btnEditComp').style.display='inline-flex';
+  document.getElementById('compEditFooter').style.display='none';
+}
+function setCompEditMode(){
+  compEditMode=true;
+  ['viewCompName','viewCompTax','viewCompEmail','viewCompRD','viewCompApp','viewCompCPA'].forEach(id=>{const e=document.getElementById(id);e.readOnly=false;e.classList.remove('input-readonly')});
+  const s=document.getElementById('viewCompStatus');s.disabled=false;s.classList.remove('input-readonly');
+  document.getElementById('btnEditComp').style.display='none';
+  document.getElementById('compEditFooter').style.display='flex';
+}
+function openViewComp(id){
+  currentCompId=id;
+  const c=companies.find(x=>x.id===id); if(!c)return;
+  _loadCompToModal(c); setCompViewMode();
+  openModal('overlayViewComp');
+}
+function openEditComp(id){
+  currentCompId=id;
+  const c=companies.find(x=>x.id===id); if(!c)return;
+  _loadCompToModal(c); setCompEditMode();
+  openModal('overlayViewComp');
+}
+function enterCompEditMode(){setCompEditMode()}
+function cancelCompEdit(){
+  const c=companies.find(x=>x.id===currentCompId); if(!c)return;
+  _loadCompToModal(c); setCompViewMode();
+}
+function saveComp(){
+  const c=companies.find(x=>x.id===currentCompId); if(!c)return;
+  c.name=document.getElementById('viewCompName').value;
+  c.taxId=document.getElementById('viewCompTax').value;
+  c.email=document.getElementById('viewCompEmail').value;
+  c.rdUrl=document.getElementById('viewCompRD').value;
+  c.app=document.getElementById('viewCompApp').value;
+  c.status=document.getElementById('viewCompStatus').value;
+  c.cpaRemaining=document.getElementById('viewCompCPA').value;
+  c.updated=fmtDate(new Date());
+  renderCompanies(); setCompViewMode();
+  showToast(`บันทึก Company "${c.name}" สำเร็จ`);
+}
+function openCreateCompany(){
+  populateAppFilter();
+  ['newCompName','newCompTax','newCompEmail','newCompRD'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('newCompApp').value='';
+  openModal('overlayCreateComp');
+}
+function createCompany(){
+  const name=document.getElementById('newCompName').value.trim();
+  const taxId=document.getElementById('newCompTax').value.trim();
+  const email=document.getElementById('newCompEmail').value.trim();
+  const rdUrl=document.getElementById('newCompRD').value.trim();
+  const appName=document.getElementById('newCompApp').value;
+  if(!name||!taxId||!appName){showToast('กรุณากรอกข้อมูลให้ครบ','warn');return}
+  if(taxId.length!==13){showToast('Tax ID ต้องมี 13 หลัก','warn');return}
+  const dateStr=fmtDate(new Date());
+  const newComp={id:Date.now(),name,taxId,email,rdUrl,app:appName,status:'Active',cpaRemaining:'365 days',created:dateStr,updated:dateStr};
+  companies.push(newComp);
+  const a=apps.find(x=>x.name===appName);
+  if(a&&!a.companies.includes(name))a.companies.push(name);
+  renderCompanies(); closeModal('overlayCreateComp');
+  showToast(`สร้าง Company "${name}" สำเร็จ`);
+}
+
+// ═══════════════════════════════════════════════════════
+//  CPA — RENDER (simplified)
+// ═══════════════════════════════════════════════════════
+function renderCPAs(list){
+  const data=list||cpas;
+  setPagerData('cpas',data,rows=>{
+    const tbody=document.getElementById('cpaTableBody');
+    if(!rows.length){tbody.innerHTML='<tr class="empty-row"><td colspan="6">ไม่พบข้อมูล CPA</td></tr>';return}
+    tbody.innerHTML=rows.map(c=>{
+      const pillCls = c.status==='Active'?'is-active':c.status==='Expiring Soon'?'is-expiring':'is-inactive';
+      return `<tr>
+        <td><strong>${c.company}</strong></td>
+        <td class="mono">${c.taxId||'—'}</td>
+        <td><span class="status-pill ${pillCls}" style="cursor:default">${c.status}</span></td>
+        <td class="date-cell mono">${c.expire||'—'}</td>
+        <td class="date-cell mono">${c.created}</td>
+        <td><button class="btn btn-outline btn-xs" onclick="openViewCPA(${c.id})">View</button></td>
+      </tr>`;
+    }).join('');
+  });
+}
+
+function filterCPAs(){
+  const name=document.getElementById('searchCPAComp').value.toLowerCase();
+  const status=document.getElementById('searchCPAStatus').value;
+  renderCPAs(cpas.filter(c=>(!name||c.company.toLowerCase().includes(name))&&(!status||c.status===status)));
+}
+function resetSearchCPA(){
+  ['searchCPAComp','searchCPAStatus'].forEach(id=>document.getElementById(id).value='');
+  renderCPAs();
+}
+
+// ── CPA Wizard helpers ──
+function _cpaShowStep(n){
+  [1,2,3].forEach(i=>{
+    const s=document.getElementById('cpaWizardStep'+i);
+    const d=document.getElementById('cpaStep'+i+'Dot');
+    if(s) s.style.display=(i===n)?'block':'none';
+    if(d) d.className='cpa-step'+(i===n?' active':i<n?' done':'');
+  });
+  const titles={1:'🗓 นัดหมายกับ RD',2:'📋 Register CPA UAT',3:'📤 Upload XML'};
+  document.getElementById('cpaWizardTitle').textContent=titles[n]||'';
+}
+
+function openCreateCPA(){
+  // Reset wizard
+  ['newCPAPath','newCPATo'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=''});
+  ['xmlTIV','xmlDBN','xmlCDN','xmlRCT'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  ['labelTIV','labelDBN','labelCDN','labelRCT'].forEach(id=>{const e=document.getElementById(id);if(e){e.textContent='📂 เลือกไฟล์';e.style.color='';e.style.borderColor=''}});
+  _cpaShowStep(1);
+  openModal('overlayCreateCPA');
+}
+
+function cpaWizardNext(fromStep){
+  if(fromStep===1){
+    // Go to step 2: populate company dropdown
+    const sel=document.getElementById('newCPAComp');
+    sel.innerHTML='<option value="">— เลือก Company —</option>';
+    companies.forEach(c=>{const opt=document.createElement('option');opt.value=c.name;opt.textContent=c.name+' ('+c.taxId+')';sel.appendChild(opt)});
+    _cpaShowStep(2);
+  } else if(fromStep===2){
+    // Validate step 2
+    const comp=document.getElementById('newCPAComp').value;
+    const path=document.getElementById('newCPAPath').value.trim();
+    const to=document.getElementById('newCPATo').value;
+    if(!comp||!path||!to){showToast('กรุณากรอกข้อมูลให้ครบ','warn');return}
+    _cpaShowStep(3);
+  }
+}
+
+function cpaWizardBack(fromStep){
+  _cpaShowStep(fromStep-1);
+}
+
+function onXmlUpload(input, labelId){
+  const label=document.getElementById(labelId);
+  if(input.files&&input.files[0]){
+    label.textContent='✅ '+input.files[0].name;
+    label.style.color='var(--accent)';
+    label.style.borderColor='var(--accent)';
+  } else {
+    label.textContent='📂 เลือกไฟล์';
+    label.style.color='';label.style.borderColor='';
+  }
+}
+
+function createCPA(){
+  const comp=document.getElementById('newCPAComp').value;
+  const path=document.getElementById('newCPAPath').value.trim();
+  const to=document.getElementById('newCPATo').value;
+  if(!comp||!to){showToast('กรุณากรอกข้อมูลให้ครบ','warn');return}
+  const c=companies.find(x=>x.name===comp);
+  const toDate=new Date(to),today=new Date();
+  const days=Math.max(0,Math.floor((toDate-today)/(1000*60*60*24)));
+  const status=days===0?'Expired':days<=30?'Expiring Soon':'Active';
+  const fmtShort=d=>{const dt=new Date(d);return`${pad(dt.getDate())}/${pad(dt.getMonth()+1)}/${dt.getFullYear()}`};
+  const newId='CPA-'+new Date().getFullYear()+'-'+String(cpas.length+1).padStart(3,'0');
+  const dateStr=fmtDate(new Date());
+  cpas.push({id:Date.now(),cpaId:newId,company:comp,taxId:c?c.taxId:'',app:c?c.app:'',
+    path,expire:fmtShort(to),status,daysRemaining:days,created:dateStr,updated:dateStr});
+  if(c)c.cpaRemaining=status==='Expired'?'Expired':days+' days';
+  buildNotifications(); renderCPAs(); closeModal('overlayCreateCPA');
+  showToast(`Register CPA สำหรับ "${comp}" สำเร็จ ✅`);
+}
+
+function openViewCPA(id){
+  currentCPAId=id;
+  const c=cpas.find(x=>x.id===id); if(!c)return;
+  document.getElementById('viewCPAComp').value=c.company;
+  document.getElementById('viewCPATax').value=c.taxId;
+  document.getElementById('viewCPAId').value=c.cpaId;
+  document.getElementById('viewCPAApp').value=c.app;
+  document.getElementById('viewCPAProvider').value=c.provider;
+  document.getElementById('viewCPAExpire').value=c.expire;
+  document.getElementById('viewCPAStatus').value=c.status;
+  document.getElementById('viewCPADays').value=c.daysRemaining===0?'Expired':c.daysRemaining+' days';
+  document.getElementById('viewCPACreated').value=c.created;
+  document.getElementById('viewCPAUpdated').value=c.updated;
+  openModal('overlayViewCPA');
+}
+
+// ═══════════════════════════════════════════════════════
+//  CPA REPORT
+// ═══════════════════════════════════════════════════════
+/* REMOVED: renderCPAReport(list){
+
+  const data=list||cpas;
+  document.getElementById('cpaTotal').textContent=cpas.length;
+  document.getElementById('cpaActive').textContent=cpas.filter(c=>c.status==='Active').length;
+  document.getElementById('cpaExpiring').textContent=cpas.filter(c=>c.status==='Expiring Soon').length;
+  document.getElementById('cpaExpired').textContent=cpas.filter(c=>c.status==='Expired').length;
+  setPagerData('cpaReport',data,rows=>{
+    const tbody=document.getElementById('cpaReportTableBody');
+    if(!rows.length){tbody.innerHTML='<tr class="empty-row"><td colspan="8">ไม่พบข้อมูล</td></tr>';return}
+    tbody.innerHTML=rows.map(c=>{
+      const statusCls=c.status==='Active'?'badge-active':c.status==='Expiring Soon'?'badge-expiring':'badge-inactive';
+      const days=c.daysRemaining===0?'<span style="color:var(--danger);font-weight:600">Expired</span>':c.daysRemaining<=30?`<span style="color:var(--warn);font-weight:600">${c.daysRemaining} days</span>`:`<span style="color:var(--accent)">${c.daysRemaining} days</span>`;
+      return `<tr><td><strong>${c.company}</strong></td><td class="mono">${c.taxId}</td><td>${c.app}</td><td>${c.provider}</td><td class="mono date-cell">${c.expire}</td><td><span class="badge ${statusCls}">${c.status}</span></td><td>${days}</td><td class="mono date-cell">${c.created}</td></tr>`;
+    }).join('');
+  });
+}*/
+/* REMOVED: filterCPAReport(){
+
+  const comp=document.getElementById('searchCPAReportComp').value.toLowerCase();
+  const status=document.getElementById('searchCPAReportStatus').value;
+  renderCPAReport(cpas.filter(c=>(!comp||c.company.toLowerCase().includes(comp))&&(!status||c.status===status)));
+}*/
+/* REMOVED: resetCPAReportFilter(){
+
+  document.getElementById('searchCPAReportComp').value='';
+  document.getElementById('searchCPAReportStatus').value='';
+  renderCPAReport();
+}*/
+
+// ═══════════════════════════════════════════════════════
+//  DAILY REPORT
+// ═══════════════════════════════════════════════════════
+// old dailyFiltered removed
+/* old populateDailyFilters removed */
+function renderDailyStats(data){
+  const total=data.reduce((s,r)=>s+r.total,0),success=data.reduce((s,r)=>s+r.success,0),failed=data.reduce((s,r)=>s+r.failed,0);
+  const rate=total?Math.round(success/total*100):0;
+  document.getElementById('dailyStats').innerHTML=`
+    <div class="stat-card"><div class="stat-label">Total Records</div><div class="stat-value">${total.toLocaleString()}</div><div class="stat-sub">${data.length} รายการ</div></div>
+    <div class="stat-card"><div class="stat-label">Success</div><div class="stat-value" style="color:var(--accent)">${success.toLocaleString()}</div><div class="stat-sub">สำเร็จ</div></div>
+    <div class="stat-card"><div class="stat-label">Failed</div><div class="stat-value" style="color:var(--danger)">${failed.toLocaleString()}</div><div class="stat-sub">ล้มเหลว</div></div>
+    <div class="stat-card"><div class="stat-label">Success Rate</div><div class="stat-value" style="color:${rate>=99?'var(--accent)':rate>=95?'var(--warn)':'var(--danger)'}">${rate}%</div><div class="stat-sub">อัตราสำเร็จ</div></div>`;
+}
+/* old renderDailyTable removed */
+// renderDailyReport replaced above
+/* old filterDailyReport removed */
+/* old resetDailyFilter removed */
+
+// ═══════════════════════════════════════════════════════
+//  MONTHLY REPORT
+// ═══════════════════════════════════════════════════════
+// old monthlyFiltered removed
+/* old populateMonthlyFilters removed */
+function renderMonthlyStats(data){
+  const total=data.reduce((s,r)=>s+r.total,0),success=data.reduce((s,r)=>s+r.success,0),failed=data.reduce((s,r)=>s+r.failed,0);
+  const rate=total?Math.round(success/total*100):0;
+  document.getElementById('monthlyStats').innerHTML=`
+    <div class="stat-card"><div class="stat-label">Total Records</div><div class="stat-value">${total.toLocaleString()}</div><div class="stat-sub">${data.length} รายการ</div></div>
+    <div class="stat-card"><div class="stat-label">Success</div><div class="stat-value" style="color:var(--accent)">${success.toLocaleString()}</div><div class="stat-sub">สำเร็จ</div></div>
+    <div class="stat-card"><div class="stat-label">Failed</div><div class="stat-value" style="color:var(--danger)">${failed.toLocaleString()}</div><div class="stat-sub">ล้มเหลว</div></div>
+    <div class="stat-card"><div class="stat-label">Success Rate</div><div class="stat-value" style="color:${rate>=99?'var(--accent)':rate>=95?'var(--warn)':'var(--danger)'}">${rate}%</div><div class="stat-sub">อัตราสำเร็จ</div></div>`;
+}
+/* old renderMonthlyTable removed */
+// renderMonthlyReport replaced above
+/* old filterMonthlyReport removed */
+/* old resetMonthlyFilter removed */
+
+// ═══════════════════════════════════════════════════════
+//  EXPORT — IMPROVED
+// ═══════════════════════════════════════════════════════
+function _xlsxDownload(wb,filename){
+  XLSX.writeFile(wb,filename);
+  showToast(`⬇ Export "${filename}" สำเร็จ`);
+}
+function _addSummarySheet(wb,title,stats){
+  const ws=XLSX.utils.aoa_to_sheet([
+    [title+' — Summary Report'],[''],
+    ['Export Date',fmtDate(new Date())],[''],
+    ...stats.map(s=>[s.label,s.value])
+  ]);
+  ws['!cols']=[{wch:25},{wch:30}];
+  XLSX.utils.book_append_sheet(wb,ws,'Summary');
+}
+
+function exportAppsXLSX(){
+  const wb=XLSX.utils.book_new();
+  _addSummarySheet(wb,'Application',[
+    {label:'Total Applications',value:apps.length},
+    {label:'Active',value:apps.filter(a=>a.status==='Active').length},
+    {label:'Inactive',value:apps.filter(a=>a.status==='Inactive').length},
+    {label:'API Protocol',value:apps.filter(a=>a.protocol==='API').length},
+    {label:'Message Queue Protocol',value:apps.filter(a=>a.protocol==='Message Queue').length},
+  ]);
+  const data=[
+    ['Application Name','Protocol','Status','Companies','Created Date','Updated Date'],
+    ...apps.map(a=>[a.name,a.protocol,a.status,a.companies.join(', '),a.created,a.updated])
+  ];
+  const ws=XLSX.utils.aoa_to_sheet(data);
+  ws['!cols']=[{wch:25},{wch:15},{wch:12},{wch:30},{wch:20},{wch:20}];
+  XLSX.utils.book_append_sheet(wb,ws,'Application List');
+  _xlsxDownload(wb,'Application_Report.xlsx');
+}
+function exportAppsCSV(){
+  const rows=[['Application Name','Protocol','Status','Companies','Created Date','Updated Date'],...apps.map(a=>[a.name,a.protocol,a.status,a.companies.join('|'),a.created,a.updated])];
+  _downloadCSV(rows,'Application_Report.csv');
+}
+
+function exportCompaniesXLSX(){
+  const wb=XLSX.utils.book_new();
+  _addSummarySheet(wb,'Company',[
+    {label:'Total Companies',value:companies.length},
+    {label:'Active',value:companies.filter(c=>c.status==='Active').length},
+    {label:'Inactive',value:companies.filter(c=>c.status==='Inactive').length},
+    {label:'CPA Expired',value:companies.filter(c=>c.cpaRemaining==='Expired').length},
+  ]);
+  const data=[
+    ['Company Name','Tax ID','Application','Status','CPA Remaining','Email','RD URL','Created Date','Updated Date'],
+    ...companies.map(c=>[c.name,c.taxId,c.app,c.status,c.cpaRemaining,c.email,c.rdUrl,c.created,c.updated])
+  ];
+  const ws=XLSX.utils.aoa_to_sheet(data);
+  ws['!cols']=[{wch:20},{wch:16},{wch:22},{wch:10},{wch:14},{wch:28},{wch:35},{wch:20},{wch:20}];
+  XLSX.utils.book_append_sheet(wb,ws,'Company List');
+  _xlsxDownload(wb,'Company_Report.xlsx');
+}
+function exportCompaniesCSV(){
+  const rows=[['Company Name','Tax ID','Application','Status','CPA Remaining','Email','Created Date','Updated Date'],...companies.map(c=>[c.name,c.taxId,c.app,c.status,c.cpaRemaining,c.email,c.created,c.updated])];
+  _downloadCSV(rows,'Company_Report.csv');
+}
+
+function exportCPAsXLSX(){
+  const wb=XLSX.utils.book_new();
+  _addSummarySheet(wb,'CPA',[
+    {label:'Total CPA',value:cpas.length},
+    {label:'Active',value:cpas.filter(c=>c.status==='Active').length},
+    {label:'Expiring Soon',value:cpas.filter(c=>c.status==='Expiring Soon').length},
+    {label:'Expired',value:cpas.filter(c=>c.status==='Expired').length},
+  ]);
+  const data=[
+    ['Company Name','CPA ID','Tax ID','Application','Provider','CPA Expire','Status','Days Remaining','Created Date','Updated Date'],
+    ...cpas.map(c=>[c.company,c.cpaId,c.taxId,c.app,c.provider,c.expire,c.status,c.daysRemaining===0?'Expired':c.daysRemaining+' days',c.created,c.updated])
+  ];
+  const ws=XLSX.utils.aoa_to_sheet(data);
+  ws['!cols']=[{wch:22},{wch:16},{wch:16},{wch:22},{wch:22},{wch:14},{wch:14},{wch:14},{wch:20},{wch:20}];
+  XLSX.utils.book_append_sheet(wb,ws,'CPA List');
+  _xlsxDownload(wb,'CPA_Report.xlsx');
+}
+function exportCPAsCSV(){
+  const rows=[['Company Name','CPA ID','Status','Created Date','Updated Date'],...cpas.map(c=>[c.company,c.cpaId,c.status,c.created,c.updated])];
+  _downloadCSV(rows,'CPA_Report.csv');
+}
+
+function exportDailyXLSX(){
+  const wb=XLSX.utils.book_new();
+  const tot=dailyFiltered.reduce((s,r)=>s+r.total,0),suc=dailyFiltered.reduce((s,r)=>s+r.success,0),fail=dailyFiltered.reduce((s,r)=>s+r.failed,0);
+  _addSummarySheet(wb,'Daily RD Report',[
+    {label:'Total Records',value:tot},{label:'Success',value:suc},{label:'Failed',value:fail},
+    {label:'Success Rate',value:tot?Math.round(suc/tot*100)+'%':'0%'},
+    {label:'Rows in Export',value:dailyFiltered.length},
+  ]);
+  const data=[
+    ['Date','Application','Company','Tax ID','Total Records','Success','Failed','Status','Submitted At'],
+    ...dailyFiltered.map(r=>[r.date,r.app,r.company,r.taxId,r.total,r.success,r.failed,r.status,r.submittedAt])
+  ];
+  const ws=XLSX.utils.aoa_to_sheet(data);
+  ws['!cols']=[{wch:14},{wch:22},{wch:16},{wch:16},{wch:14},{wch:10},{wch:8},{wch:12},{wch:20}];
+  XLSX.utils.book_append_sheet(wb,ws,'Daily Report');
+  _xlsxDownload(wb,'Daily_RD_Report.xlsx');
+}
+function exportDailyCSV(){
+  const rows=[['Date','Application','Company','Tax ID','Total','Success','Failed','Status','Submitted At'],...dailyFiltered.map(r=>[r.date,r.app,r.company,r.taxId,r.total,r.success,r.failed,r.status,r.submittedAt])];
+  _downloadCSV(rows,'Daily_RD_Report.csv');
+}
+
+function exportMonthlyXLSX(){
+  const wb=XLSX.utils.book_new();
+  const tot=monthlyFiltered.reduce((s,r)=>s+r.total,0),suc=monthlyFiltered.reduce((s,r)=>s+r.success,0),fail=monthlyFiltered.reduce((s,r)=>s+r.failed,0);
+  _addSummarySheet(wb,'Monthly RD Submission',[
+    {label:'Total Records',value:tot},{label:'Success',value:suc},{label:'Failed',value:fail},
+    {label:'Success Rate',value:tot?Math.round(suc/tot*100)+'%':'0%'},
+    {label:'Rows in Export',value:monthlyFiltered.length},
+  ]);
+  const data=[
+    ['Year','Month','Application','Company','Tax ID','Total Records','Success','Failed','Success Rate','Last Submitted'],
+    ...monthlyFiltered.map(r=>[r.year,r.monthName,r.app,r.company,r.taxId,r.total,r.success,r.failed,r.total?Math.round(r.success/r.total*100)+'%':'0%',r.lastSubmit])
+  ];
+  const ws=XLSX.utils.aoa_to_sheet(data);
+  ws['!cols']=[{wch:8},{wch:14},{wch:22},{wch:16},{wch:16},{wch:14},{wch:10},{wch:8},{wch:14},{wch:20}];
+  XLSX.utils.book_append_sheet(wb,ws,'Monthly Report');
+  _xlsxDownload(wb,'Monthly_RD_Submission.xlsx');
+}
+function exportMonthlyCSV(){
+  const rows=[['Year','Month','Application','Company','Tax ID','Total','Success','Failed','Rate','Last Submitted'],...monthlyFiltered.map(r=>[r.year,r.monthName,r.app,r.company,r.taxId,r.total,r.success,r.failed,r.total?Math.round(r.success/r.total*100)+'%':'0%',r.lastSubmit])];
+  _downloadCSV(rows,'Monthly_RD_Submission.csv');
+}
+
+function _downloadCSV(rows,filename){
+  const csv=rows.map(row=>row.map(cell=>`"${String(cell??'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=filename;a.click();
+  URL.revokeObjectURL(url);
+  showToast(`⬇ Export "${filename}" สำเร็จ`);
+}
+
+// ═══════════════════════════════════════════════════════
+//  UTILS
+// ═══════════════════════════════════════════════════════
+function pad(n){return String(n).padStart(2,'0')}
+function fmtDate(d){return`${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`}
+
+
+// ═══════════════════════════════════════════════════════
+//  EXPORT GENERATING MODAL
+// ═══════════════════════════════════════════════════════
+function doExport(menuId, exportFn){
+  // Close any open menus
+  document.querySelectorAll('.export-menu.open').forEach(m=>m.classList.remove('open'));
+  // Show generating modal
+  const modal = document.getElementById('exportGeneratingModal');
+  modal.style.display = 'block';
+  // Re-trigger fill animation
+  const fill = modal.querySelector('.export-gen-fill');
+  fill.style.animation = 'none';
+  fill.offsetHeight; // reflow
+  fill.style.animation = 'fillBar 1.8s ease forwards';
+  // Run export after short delay, then hide modal
+  setTimeout(()=>{
+    try{ exportFn(); }catch(e){ console.error(e); }
+    setTimeout(()=>{ modal.style.display='none'; }, 400);
+  }, 1900);
+}
+
+// ═══════════════════════════════════════════════════════
+//  DAILY DATA (new structure)
+// ═══════════════════════════════════════════════════════
+// Status: Acknowledged, Accepted, Rejected
+const rawDailyData = [];
+(function generateDailyData(){
+  const statuses = ['Acknowledged','Accepted','Accepted','Accepted','Rejected'];
+  const rdMessages = {
+    'Acknowledged':'รับเอกสารเรียบร้อย รอประมวลผล',
+    'Accepted':'ตรวจสอบและยืนยันเอกสารถูกต้อง',
+    'Rejected':'ข้อมูลไม่ครบถ้วน กรุณาตรวจสอบ Tax ID'
+  };
+  const appList=['EXAT SmartTax','TISCO SmartTax'];
+  const compList={
+    'EXAT SmartTax':['EXATHQ','EXATDR'],
+    'TISCO SmartTax':['TISCO']
+  };
+  let invCounter = 1;
+  // Generate for last 7 days
+  for(let d=6;d>=0;d--){
+    const dt = new Date(); dt.setDate(dt.getDate()-d);
+    const dateStr = `${pad(dt.getDate())}/${pad(dt.getMonth()+1)}/${dt.getFullYear()}`;
+    for(let h=8;h<=17;h+=1){
+      const app = appList[Math.floor(Math.random()*appList.length)];
+      const comps = compList[app];
+      const comp = comps[Math.floor(Math.random()*comps.length)];
+      const status = statuses[Math.floor(Math.random()*statuses.length)];
+      const convId = 'TP1055555551839200'+String(invCounter).padStart(8,'0');
+      const invoiceNo = 'TIV'+String(invCounter).padStart(3,'0');
+      const actionDate = `${dateStr} ${pad(h)}:${pad(Math.floor(Math.random()*60))}`;
+      const issueDate = `${dateStr} ${pad(h-1>0?h-1:8)}:00`;
+      rawDailyData.push({
+        actionDate, convId, invoiceNo, issueDate, status,
+        rdMessage: rdMessages[status], app, company:comp,
+        dateKey: dt.toISOString().slice(0,10)
+      });
+      invCounter++;
+    }
+  }
+})();
+
+let dailyFiltered2 = [...rawDailyData];
+let dailyStatusFilter = ''; // '' | 'Acknowledged' | 'Accepted' | 'Rejected'
+
+function populateDailyFilters(){
+  const appSel = document.getElementById('dailyFilterApp');
+  const compSel = document.getElementById('dailyFilterComp');
+  const appNames = [...new Set(rawDailyData.map(r=>r.app))];
+  const compNames = [...new Set(rawDailyData.map(r=>r.company))];
+  appSel.innerHTML = '<option value="">All</option>' + appNames.map(a=>`<option>${a}</option>`).join('');
+  compSel.innerHTML = '<option value="">All</option>' + compNames.map(c=>`<option>${c}</option>`).join('');
+  // Set default: today
+  const today = new Date();
+  const pad2 = n=>String(n).padStart(2,'0');
+  document.getElementById('dailyFilterFrom').value = `${today.getFullYear()}-${pad2(today.getMonth()+1)}-${pad2(today.getDate())}T00:00`;
+  document.getElementById('dailyFilterTo').value   = `${today.getFullYear()}-${pad2(today.getMonth()+1)}-${pad2(today.getDate())}T23:59`;
+}
+
+function renderDailyStats(data){
+  const doc = data.length;
+  const ack = data.filter(r=>r.status==='Acknowledged').length;
+  const acc = data.filter(r=>r.status==='Accepted').length;
+  const rej = data.filter(r=>r.status==='Rejected').length;
+  const cards = [
+    {label:'Document',value:doc,color:'var(--primary)',key:''},
+    {label:'Acknowledged',value:ack,color:'var(--warn)',key:'Acknowledged'},
+    {label:'Accepted',value:acc,color:'var(--accent)',key:'Accepted'},
+    {label:'Rejected',value:rej,color:'var(--danger)',key:'Rejected'},
+  ];
+  document.getElementById('dailyStats').innerHTML = cards.map(c=>`
+    <div class="stat-card" style="cursor:pointer;transition:all .15s;border-color:${dailyStatusFilter===c.key?c.color:'var(--border)'};box-shadow:${dailyStatusFilter===c.key?`0 0 0 2px ${c.color}33`:'0 1px 4px rgba(0,0,0,.05)'}"
+      onclick="setDailyStatFilter('${c.key}')">
+      <div class="stat-label">${c.label}</div>
+      <div class="stat-value" style="color:${c.color}">${c.value.toLocaleString()}</div>
+      <div class="stat-sub" style="color:${dailyStatusFilter===c.key?c.color:'var(--text3)'}">
+        ${dailyStatusFilter===c.key?'● กรองอยู่':'คลิกเพื่อกรอง'}
+      </div>
+    </div>`).join('');
+}
+
+function setDailyStatFilter(key){
+  dailyStatusFilter = (dailyStatusFilter===key)?'':key;
+  _applyDailyFilters();
+}
+
+function _applyDailyFilters(){
+  const from = document.getElementById('dailyFilterFrom').value;
+  const to   = document.getElementById('dailyFilterTo').value;
+  const app  = document.getElementById('dailyFilterApp')?.value||'';
+  const comp = document.getElementById('dailyFilterComp')?.value||'';
+  dailyFiltered2 = rawDailyData.filter(r=>{
+    if(dailyStatusFilter && r.status!==dailyStatusFilter) return false;
+    if(app && r.app!==app) return false;
+    if(comp && r.company!==comp) return false;
+    if(from||to){
+      // parse actionDate "DD/MM/YYYY HH:MM" to comparable string
+      const parts = r.actionDate.split(' ');
+      const dParts = parts[0].split('/');
+      const iso = `${dParts[2]}-${dParts[1]}-${dParts[0]}T${parts[1]||'00:00'}`;
+      if(from && iso < from) return false;
+      if(to   && iso > to)   return false;
+    }
+    return true;
+  });
+  renderDailyStats(dailyFiltered2);
+  renderDailyTable(dailyFiltered2);
+}
+
+function renderDailyTable(data){
+  setPagerData('daily', data, rows=>{
+    const tbody = document.getElementById('dailyTableBody');
+    if(!rows.length){tbody.innerHTML='<tr class="empty-row"><td colspan="6">ไม่พบข้อมูล</td></tr>';return}
+    tbody.innerHTML = rows.map(r=>{
+      const sCls = r.status==='Accepted'?'badge-active':r.status==='Rejected'?'badge-inactive':'badge-mq';
+      return `<tr>
+        <td class="mono date-cell">${r.actionDate}</td>
+        <td class="mono" style="font-size:11px">${r.convId}</td>
+        <td class="mono">${r.invoiceNo}</td>
+        <td class="date-cell">${r.issueDate}</td>
+        <td><span class="badge ${sCls}">${r.status}</span></td>
+        <td style="font-size:12px;color:var(--text2)">${r.rdMessage}</td>
+      </tr>`;
+    }).join('');
+  });
+}
+
+function renderDailyReport(){
+  populateDailyFilters();
+  dailyStatusFilter = '';
+  _applyDailyFilters();
+}
+function filterDailyReport(){ _applyDailyFilters(); }
+function resetDailyFilter(){
+  const today = new Date();
+  const p2 = n=>String(n).padStart(2,'0');
+  document.getElementById('dailyFilterFrom').value = `${today.getFullYear()}-${p2(today.getMonth()+1)}-${p2(today.getDate())}T00:00`;
+  document.getElementById('dailyFilterTo').value   = `${today.getFullYear()}-${p2(today.getMonth()+1)}-${p2(today.getDate())}T23:59`;
+  document.getElementById('dailyFilterApp').value='';
+  document.getElementById('dailyFilterComp').value='';
+  dailyStatusFilter='';
+  _applyDailyFilters();
+}
+
+// ═══════════════════════════════════════════════════════
+//  MONTHLY DATA (daily-row aggregation)
+// ═══════════════════════════════════════════════════════
+function _buildMonthlyAgg(data){
+  const map = {};
+  data.forEach(r=>{
+    const dk = r.dateKey;
+    if(!map[dk]) map[dk]={dateKey:dk,doc:0,ack:0,acc:0,rej:0};
+    map[dk].doc++;
+    if(r.status==='Acknowledged') map[dk].ack++;
+    if(r.status==='Accepted')     map[dk].acc++;
+    if(r.status==='Rejected')     map[dk].rej++;
+  });
+  return Object.values(map).sort((a,b)=>a.dateKey.localeCompare(b.dateKey));
+}
+
+let monthlyFiltered2 = [];
+let monthlyStatusFilter = '';
+
+function populateMonthlyFilters(){
+  const appSel = document.getElementById('monthlyFilterApp');
+  const compSel = document.getElementById('monthlyFilterComp');
+  const appNames = [...new Set(rawDailyData.map(r=>r.app))];
+  const compNames = [...new Set(rawDailyData.map(r=>r.company))];
+  appSel.innerHTML = '<option value="">All</option>' + appNames.map(a=>`<option>${a}</option>`).join('');
+  compSel.innerHTML = '<option value="">All</option>' + compNames.map(c=>`<option>${c}</option>`).join('');
+  // Default: current month
+  const now = new Date();
+  const p2 = n=>String(n).padStart(2,'0');
+  document.getElementById('monthlyFilterFrom').value = `${now.getFullYear()}-${p2(now.getMonth()+1)}-01`;
+  const lastDay = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
+  document.getElementById('monthlyFilterTo').value = `${now.getFullYear()}-${p2(now.getMonth()+1)}-${p2(lastDay)}`;
+}
+
+function renderMonthlyStats(aggData){
+  const doc = aggData.reduce((s,r)=>s+r.doc,0);
+  const ack = aggData.reduce((s,r)=>s+r.ack,0);
+  const acc = aggData.reduce((s,r)=>s+r.acc,0);
+  const rej = aggData.reduce((s,r)=>s+r.rej,0);
+  const cards = [
+    {label:'Document',value:doc,color:'var(--primary)',key:''},
+    {label:'Acknowledged',value:ack,color:'var(--warn)',key:'Acknowledged'},
+    {label:'Accepted',value:acc,color:'var(--accent)',key:'Accepted'},
+    {label:'Rejected',value:rej,color:'var(--danger)',key:'Rejected'},
+  ];
+  document.getElementById('monthlyStats').innerHTML = cards.map(c=>`
+    <div class="stat-card" style="cursor:pointer;transition:all .15s;border-color:${monthlyStatusFilter===c.key?c.color:'var(--border)'};box-shadow:${monthlyStatusFilter===c.key?`0 0 0 2px ${c.color}33`:'0 1px 4px rgba(0,0,0,.05)'}"
+      onclick="setMonthlyStatFilter('${c.key}')">
+      <div class="stat-label">${c.label}</div>
+      <div class="stat-value" style="color:${c.color}">${c.value.toLocaleString()}</div>
+      <div class="stat-sub" style="color:${monthlyStatusFilter===c.key?c.color:'var(--text3)'}">
+        ${monthlyStatusFilter===c.key?'● กรองอยู่':'คลิกเพื่อกรอง'}
+      </div>
+    </div>`).join('');
+}
+
+function setMonthlyStatFilter(key){
+  monthlyStatusFilter = (monthlyStatusFilter===key)?'':key;
+  _applyMonthlyFilters();
+}
+
+function _applyMonthlyFilters(){
+  const from = document.getElementById('monthlyFilterFrom').value;
+  const to   = document.getElementById('monthlyFilterTo').value;
+  const app  = document.getElementById('monthlyFilterApp')?.value||'';
+  const comp = document.getElementById('monthlyFilterComp')?.value||'';
+  // Filter raw rows first
+  let filtered = rawDailyData.filter(r=>{
+    if(monthlyStatusFilter && r.status!==monthlyStatusFilter) return false;
+    if(app && r.app!==app) return false;
+    if(comp && r.company!==comp) return false;
+    if(from && r.dateKey < from) return false;
+    if(to   && r.dateKey > to)   return false;
+    return true;
+  });
+  // Aggregate by date
+  const agg = _buildMonthlyAgg(filtered);
+  monthlyFiltered2 = agg;
+  renderMonthlyStats(agg);
+  renderMonthlyTable(agg);
+}
+
+function renderMonthlyTable(agg){
+  setPagerData('monthly', agg, rows=>{
+    const tbody = document.getElementById('monthlyTableBody');
+    if(!rows.length){tbody.innerHTML='<tr class="empty-row"><td colspan="5">ไม่พบข้อมูล</td></tr>';return}
+    tbody.innerHTML = rows.map(r=>{
+      const parts = r.dateKey.split('-');
+      const dateDisp = `${parts[2]}/${parts[1]}/${parts[0]}`;
+      return `<tr>
+        <td class="mono date-cell">${dateDisp}</td>
+        <td style="text-align:right;font-family:'IBM Plex Mono',monospace">${r.doc.toLocaleString()}</td>
+        <td style="text-align:right;color:var(--warn);font-weight:600">${r.ack.toLocaleString()}</td>
+        <td style="text-align:right;color:var(--accent);font-weight:600">${r.acc.toLocaleString()}</td>
+        <td style="text-align:right;color:var(--danger);font-weight:600">${r.rej.toLocaleString()}</td>
+      </tr>`;
+    }).join('');
+  });
+}
+
+function renderMonthlyReport(){
+  populateMonthlyFilters();
+  monthlyStatusFilter = '';
+  _applyMonthlyFilters();
+}
+function filterMonthlyReport(){ _applyMonthlyFilters(); }
+function resetMonthlyFilter(){
+  const now = new Date();
+  const p2 = n=>String(n).padStart(2,'0');
+  document.getElementById('monthlyFilterFrom').value = `${now.getFullYear()}-${p2(now.getMonth()+1)}-01`;
+  const lastDay = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
+  document.getElementById('monthlyFilterTo').value = `${now.getFullYear()}-${p2(now.getMonth()+1)}-${p2(lastDay)}`;
+  document.getElementById('monthlyFilterApp').value='';
+  document.getElementById('monthlyFilterComp').value='';
+  monthlyStatusFilter='';
+  _applyMonthlyFilters();
+}
+
+// ═══════════════════════════════════════════════════════
+//  CPA REGISTER WIZARD
+// ═══════════════════════════════════════════════════════
+let cpaWizardStep = 1;
+function openRegisterCPA(){
+  cpaWizardStep = 1;
+  // Populate company dropdown
+  const sel = document.getElementById('cpaUATCompany');
+  sel.innerHTML = '<option value="">— Select Company —</option>';
+  companies.forEach(c=>{const opt=document.createElement('option');opt.value=c.name;opt.textContent=c.name;sel.appendChild(opt)});
+  _showCPAStep(1);
+  openModal('overlayRegisterCPA');
+}
+
+function _showCPAStep(step){
+  cpaWizardStep = step;
+  [1,2,3,4].forEach(i=>{
+    document.getElementById('cpaStep'+i).style.display = i===step?'flex':'none';
+    document.getElementById('cpaStep'+i+'Footer').style.display = i===step?'flex':'none';
+    const dot = document.getElementById('wd'+i);
+    dot.className = 'wizard-dot' + (i<step?' done':i===step?' active':'');
+    if(i<step) document.getElementById('wl'+i)?.classList.add('done');
+    else document.getElementById('wl'+i)?.classList.remove('done');
+  });
+  const titles = {
+    1:'📋 Register CPA — นัดหมายกับ RD',
+    2:'🧪 Register CPA — UAT Environment',
+    3:'📤 Register CPA — Upload XML Test',
+    4:'🚀 Register CPA — PROD Environment'
+  };
+  document.getElementById('cpaWizardTitle').textContent = titles[step];
+}
+
+function cpaWizardNext(step){ _showCPAStep(step); }
+function cpaWizardBack(step){ _showCPAStep(step); }
+
+function submitUAT(){
+  const comp = document.getElementById('cpaUATCompany').value;
+  const path = document.getElementById('cpaUATPath').value.trim();
+  const exp  = document.getElementById('cpaUATExpired').value;
+  if(!comp||!path||!exp){showToast('กรุณากรอกข้อมูลให้ครบ','warn');return}
+  // Pre-fill PROD with same company/provider
+  document.getElementById('cpaPRODCompany').value = comp;
+  document.getElementById('cpaPRODProvider').value = document.getElementById('cpaUATProvider').value;
+  _showCPAStep(3);
+}
+
+function submitPROD(){
+  const path = document.getElementById('cpaPRODPath').value.trim();
+  const exp  = document.getElementById('cpaPRODExpired').value;
+  if(!path||!exp){showToast('กรุณากรอกข้อมูลให้ครบ','warn');return}
+  const comp = document.getElementById('cpaPRODCompany').value;
+  const prov = document.getElementById('cpaPRODProvider').value;
+  const c = companies.find(x=>x.name===comp);
+  const toDate = new Date(exp), today = new Date();
+  const days = Math.max(0, Math.floor((toDate-today)/(1000*60*60*24)));
+  const status = days===0?'Expired':days<=30?'Expiring Soon':'Active';
+  const fmtShort = d=>{const dt=new Date(d);return `${pad(dt.getDate())}/${pad(dt.getMonth()+1)}/${dt.getFullYear()}`};
+  const newId = 'CPA-'+new Date().getFullYear()+'-'+String(cpas.length+1).padStart(3,'0');
+  const dateStr = fmtDate(new Date());
+  cpas.push({id:Date.now(),cpaId:newId,company:comp,taxId:c?c.taxId:'',app:c?c.app:'',provider:prov,expire:fmtShort(exp),status,daysRemaining:days,created:dateStr,updated:dateStr});
+  if(c) c.cpaRemaining = status==='Expired'?'Expired':days+' days';
+  buildNotifications(); renderCPAs(); closeModal('overlayRegisterCPA');
+  showToast(`Register CPA PROD สำหรับ "${comp}" สำเร็จ 🎉`);
+}
+
+function triggerXML(type){ document.getElementById('xml'+type.toUpperCase()).click(); }
+function markXML(input, checkId){
+  const el = document.getElementById(checkId);
+  if(input.files[0]) el.textContent = '✓ ' + input.files[0].name;
+}
+
+// ═══════════════════════════════════════════════════════
+//  UPDATED renderCPAs (new table: Company Name, Tax ID, Status, Expired date, Created date, Action)
+// ═══════════════════════════════════════════════════════
+function renderCPAs(list){
+  const data = list||cpas;
+  setPagerData('cpas', data, rows=>{
+    const tbody = document.getElementById('cpaTableBody');
+    if(!rows.length){tbody.innerHTML='<tr class="empty-row"><td colspan="6">ไม่พบข้อมูล CPA</td></tr>';return}
+    tbody.innerHTML = rows.map(c=>{
+      const pillCls = c.status==='Active'?'is-active':c.status==='Expiring Soon'?'is-expiring':'is-inactive';
+      return `<tr>
+        <td><strong>${c.company}</strong></td>
+        <td class="mono">${c.taxId||'—'}</td>
+        <td><span class="status-pill ${pillCls}">${c.status}</span></td>
+        <td class="date-cell mono">${c.expire||'—'}</td>
+        <td class="date-cell mono">${c.created}</td>
+        <td><button class="btn btn-outline btn-xs" onclick="openViewCPA(${c.id})">View</button></td>
+      </tr>`;
+    }).join('');
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+//  EXPORT FUNCTIONS (updated to use doExport wrapper)
+// ═══════════════════════════════════════════════════════
+function exportDailyXLSX(){
+  const wb = XLSX.utils.book_new();
+  const data = [
+    ['Action Date','Conversation ID','Invoice No.','Issue Date','Status','RD Message'],
+    ...dailyFiltered2.map(r=>[r.actionDate,r.convId,r.invoiceNo,r.issueDate,r.status,r.rdMessage])
+  ];
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  ws['!cols'] = [{wch:18},{wch:30},{wch:12},{wch:18},{wch:14},{wch:40}];
+  XLSX.utils.book_append_sheet(wb, ws, 'Daily RD Report');
+  XLSX.writeFile(wb, 'Daily_RD_Report.xlsx');
+  showToast('⬇ Export Daily RD Report สำเร็จ');
+}
+function exportDailyCSV(){
+  const rows = [['Action Date','Conversation ID','Invoice No.','Issue Date','Status','RD Message'],
+    ...dailyFiltered2.map(r=>[r.actionDate,r.convId,r.invoiceNo,r.issueDate,r.status,r.rdMessage])];
+  _downloadCSV(rows,'Daily_RD_Report.csv');
+}
+function exportMonthlyXLSX(){
+  const wb = XLSX.utils.book_new();
+  const data = [
+    ['Action Date','Document','Acknowledged','Accepted','Rejected'],
+    ...monthlyFiltered2.map(r=>{
+      const p=r.dateKey.split('-');
+      return [`${p[2]}/${p[1]}/${p[0]}`,r.doc,r.ack,r.acc,r.rej];
+    })
+  ];
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  ws['!cols'] = [{wch:14},{wch:12},{wch:14},{wch:12},{wch:12}];
+  XLSX.utils.book_append_sheet(wb, ws, 'Monthly RD Report');
+  XLSX.writeFile(wb, 'Monthly_RD_Report.xlsx');
+  showToast('⬇ Export Monthly RD Report สำเร็จ');
+}
+function exportMonthlyCSV(){
+  const rows = [['Action Date','Document','Acknowledged','Accepted','Rejected'],
+    ...monthlyFiltered2.map(r=>{const p=r.dateKey.split('-');return [`${p[2]}/${p[1]}/${p[0]}`,r.doc,r.ack,r.acc,r.rej]})];
+  _downloadCSV(rows,'Monthly_RD_Report.csv');
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  INIT PAGERS + START
+// ═══════════════════════════════════════════════════════
+initPager('apps','appPag',10);
+initPager('companies','compPag',10);
+initPager('cpas','cpaPag',10);
+// cpaReport pager removed
+initPager('daily','dailyPag',10);
+initPager('monthly','monthlyPag',10);
+
+buildNotifications();
+navigate('application');
+    </script>
+
+    <!-- Export Generating Modal -->
+    <div id="exportGeneratingModal" style="display:none">
+        <div class="export-generating-overlay" onclick="void(0)">
+            <div class="export-generating-box">
+                <div class="export-spinner"></div>
+                <div class="export-gen-title">กำลัง Generate เอกสาร...</div>
+                <div class="export-gen-sub">ระบบกำลังรวบรวมและจัดรูปแบบข้อมูล<br>กรุณารอสักครู่</div>
+                <div class="export-gen-bar">
+                    <div class="export-gen-fill"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register CPA Wizard Modal -->
+    <div class="overlay" id="overlayRegisterCPA">
+        <div class="modal" style="width:640px;max-height:88vh">
+            <div class="modal-header">
+                <div>
+                    <span class="modal-title" id="cpaWizardTitle">📋 Register CPA</span>
+                    <div style="display:flex;gap:0;margin-top:10px">
+                        <div class="wizard-step" id="ws1">
+                            <div class="wizard-dot active" id="wd1">1</div>
+                            <span class="wizard-label">นัดหมาย RD</span>
+                        </div>
+                        <div class="wizard-line" id="wl1"></div>
+                        <div class="wizard-step" id="ws2">
+                            <div class="wizard-dot" id="wd2">2</div>
+                            <span class="wizard-label">Register UAT</span>
+                        </div>
+                        <div class="wizard-line" id="wl2"></div>
+                        <div class="wizard-step" id="ws3">
+                            <div class="wizard-dot" id="wd3">3</div>
+                            <span class="wizard-label">Upload XML</span>
+                        </div>
+                        <div class="wizard-line" id="wl3"></div>
+                        <div class="wizard-step" id="ws4">
+                            <div class="wizard-dot" id="wd4">4</div>
+                            <span class="wizard-label">Register PROD</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="close-btn" onclick="closeModal('overlayRegisterCPA')">✕</button>
+            </div>
+
+            <!-- Step 1: นัดหมายกับ RD -->
+            <div id="cpaStep1" class="modal-body" style="gap:14px">
+                <div style="background:var(--primary-dim);border:1px solid rgba(26,86,219,.15);border-radius:10px;padding:16px 18px">
+                    <div style="font-size:14px;font-weight:700;color:var(--primary);margin-bottom:10px">📌 ขั้นตอนการขอ CPA กับกรมสรรพากร (Host to Host)</div>
+                    <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--text2)">
+                        <div style="display:flex;gap:10px;align-items:flex-start"><span style="background:var(--primary);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px">1</span><span>ยื่นหนังสือแจ้งความประสงค์ขอเชื่อมต่อระบบ Host to Host ที่กองบริหารการเสียภาษีทางอิเล็กทรอนิกส์ ชั้น 21</span></div>
+                        <div style="display:flex;gap:10px;align-items:flex-start"><span style="background:var(--primary);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px">2</span><span>กรมสรรพากรพิจารณาคุณสมบัติและแจ้งผลทางอีเมล (บ.อ.01)</span></div>
+                        <div style="display:flex;gap:10px;align-items:flex-start"><span style="background:var(--primary);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px">3</span><span>บันทึก IP Address, Endpoint, SSL Certificate ที่ <strong>https://etax.rd.go.th</strong></span></div>
+                        <div style="display:flex;gap:10px;align-items:flex-start"><span style="background:var(--primary);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px">4</span><span>รับอีเมล CPA ทดสอบ (UAT) จากกรมสรรพากรพร้อมรหัสนำส่ง เพื่อทดสอบการส่ง XML ทั้ง 4 ประเภท</span></div>
+                        <div style="display:flex;gap:10px;align-items:flex-start"><span style="background:var(--primary);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px">5</span><span>เมื่อผ่านการทดสอบ รับ CPA Production จากกรมสรรพากรและเริ่ม GO LIVE</span></div>
+                    </div>
+                </div>
+                <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px 14px;font-size:12px;color:#166534">
+                    💡 <strong>เตรียมเอกสาร:</strong> หนังสือรับรองบริษัท, บัตรประชาชนผู้มีอำนาจ, ตราประทับบริษัท, ใบ ภ.พ.01 และข้อมูลระบบ IT
+                </div>
+                <div class="form-row">
+                    <label>วันที่นัดหมาย (ข้อมูลอ้างอิง)</label>
+                    <input class="input" id="cpaApptDate" type="date" placeholder="วันที่นัดหมายกับ RD">
+                </div>
+                <div class="form-row">
+                    <label>หมายเหตุ</label>
+                    <textarea class="input" id="cpaApptNote" rows="2" placeholder="หมายเหตุการนัดหมาย..." style="resize:vertical"></textarea>
+                </div>
+            </div>
+            <div id="cpaStep1Footer" class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('overlayRegisterCPA')">Cancel</button>
+                <button class="btn btn-primary" onclick="cpaWizardNext(2)">Next → Register UAT</button>
+            </div>
+
+            <!-- Step 2: Register CPA UAT -->
+            <div id="cpaStep2" class="modal-body" style="display:none;gap:14px">
+                <div style="background:#fef9c3;border:1px solid #fde047;border-radius:8px;padding:10px 14px;font-size:12px;color:#713f12">
+                    🧪 <strong>UAT Environment</strong> — กรอกข้อมูล CPA สำหรับทดสอบที่ได้รับจากกรมสรรพากร
+                </div>
+                <div class="form-row"><label>Company <span style="color:var(--danger)">*</span></label>
+                    <select class="select" id="cpaUATCompany"><option value="">— Select Company —</option></select>
+                </div>
+                <div class="form-row"><label>Certificate Path (.p12 / .pfx) <span style="color:var(--danger)">*</span></label>
+                    <input class="input" id="cpaUATPath" placeholder="เช่น /certs/uat/company_uat.p12">
+                </div>
+                <div class="form-row"><label>Certificate Password</label>
+                    <input class="input" id="cpaUATPass" type="password" placeholder="••••••••">
+                </div>
+                <div class="form-row"><label>Expired Date <span style="color:var(--danger)">*</span></label>
+                    <input class="input" id="cpaUATExpired" type="date">
+                </div>
+                <div class="form-row"><label>Provider</label>
+                    <select class="select" id="cpaUATProvider">
+          <option value="Host to Host">Host to Host</option>
+          <option value="BNG Service Provider">BNG Service Provider</option>
+          <option value="UIH Service Provider">UIH Service Provider</option>
+        </select>
+                </div>
+            </div>
+            <div id="cpaStep2Footer" class="modal-footer" style="display:none">
+                <button class="btn btn-outline" onclick="cpaWizardBack(1)">← Back</button>
+                <button class="btn btn-primary" onclick="submitUAT()">Submit → Upload XML</button>
+            </div>
+
+            <!-- Step 3: Upload XML -->
+            <div id="cpaStep3" class="modal-body" style="display:none;gap:14px">
+                <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 14px;font-size:12px;color:#166534">
+                    ✅ <strong>Register UAT สำเร็จ!</strong> — ทดสอบส่ง XML ทั้ง 4 ประเภทให้ครบก่อนดำเนินการต่อ
+                </div>
+                <div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:4px">อัปโหลด XML ทดสอบ (4 ประเภท)</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                    <div style="border:2px dashed var(--border2);border-radius:10px;padding:20px 16px;text-align:center;cursor:pointer;transition:border-color .15s" onclick="triggerXML('tiv')" onmouseenter="this.style.borderColor='var(--primary)'" onmouseleave="this.style.borderColor='var(--border2)'">
+                        <div style="font-size:24px;margin-bottom:6px">📄</div>
+                        <div style="font-size:13px;font-weight:700;color:var(--text)">TIV</div>
+                        <div style="font-size:11px;color:var(--text3);margin-top:2px">ใบกำกับภาษี</div>
+                        <input type="file" id="xmlTIV" accept=".xml" style="display:none" onchange="markXML(this,'tiv-check')">
+                        <div id="tiv-check" style="font-size:11px;color:var(--accent);margin-top:6px;min-height:16px"></div>
+                    </div>
+                    <div style="border:2px dashed var(--border2);border-radius:10px;padding:20px 16px;text-align:center;cursor:pointer;transition:border-color .15s" onclick="triggerXML('dbn')" onmouseenter="this.style.borderColor='var(--primary)'" onmouseleave="this.style.borderColor='var(--border2)'">
+                        <div style="font-size:24px;margin-bottom:6px">📋</div>
+                        <div style="font-size:13px;font-weight:700;color:var(--text)">DBN</div>
+                        <div style="font-size:11px;color:var(--text3);margin-top:2px">ใบเพิ่มหนี้</div>
+                        <input type="file" id="xmlDBN" accept=".xml" style="display:none" onchange="markXML(this,'dbn-check')">
+                        <div id="dbn-check" style="font-size:11px;color:var(--accent);margin-top:6px;min-height:16px"></div>
+                    </div>
+                    <div style="border:2px dashed var(--border2);border-radius:10px;padding:20px 16px;text-align:center;cursor:pointer;transition:border-color .15s" onclick="triggerXML('cdn')" onmouseenter="this.style.borderColor='var(--primary)'" onmouseleave="this.style.borderColor='var(--border2)'">
+                        <div style="font-size:24px;margin-bottom:6px">📝</div>
+                        <div style="font-size:13px;font-weight:700;color:var(--text)">CDN</div>
+                        <div style="font-size:11px;color:var(--text3);margin-top:2px">ใบลดหนี้</div>
+                        <input type="file" id="xmlCDN" accept=".xml" style="display:none" onchange="markXML(this,'cdn-check')">
+                        <div id="cdn-check" style="font-size:11px;color:var(--accent);margin-top:6px;min-height:16px"></div>
+                    </div>
+                    <div style="border:2px dashed var(--border2);border-radius:10px;padding:20px 16px;text-align:center;cursor:pointer;transition:border-color .15s" onclick="triggerXML('rct')" onmouseenter="this.style.borderColor='var(--primary)'" onmouseleave="this.style.borderColor='var(--border2)'">
+                        <div style="font-size:24px;margin-bottom:6px">🧾</div>
+                        <div style="font-size:13px;font-weight:700;color:var(--text)">RCT</div>
+                        <div style="font-size:11px;color:var(--text3);margin-top:2px">ใบรับ</div>
+                        <input type="file" id="xmlRCT" accept=".xml" style="display:none" onchange="markXML(this,'rct-check')">
+                        <div id="rct-check" style="font-size:11px;color:var(--accent);margin-top:6px;min-height:16px"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="cpaStep3Footer" class="modal-footer" style="display:none">
+                <button class="btn btn-outline" onclick="cpaWizardBack(2)">← Back</button>
+                <button class="btn btn-primary" onclick="cpaWizardNext(4)">Next → Register PROD</button>
+            </div>
+
+            <!-- Step 4: Register CPA PROD -->
+            <div id="cpaStep4" class="modal-body" style="display:none;gap:14px">
+                <div style="background:var(--danger-dim);border:1px solid rgba(224,36,36,.2);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--danger)">
+                    🚀 <strong>PRODUCTION Environment</strong> — CPA สำหรับใช้งานจริง กรุณาตรวจสอบข้อมูลให้ถูกต้อง
+                </div>
+                <div class="form-row"><label>Company <span style="color:var(--danger)">*</span></label>
+                    <input class="input input-readonly" id="cpaPRODCompany" readonly>
+                </div>
+                <div class="form-row"><label>Certificate Path (.p12 / .pfx) <span style="color:var(--danger)">*</span></label>
+                    <input class="input" id="cpaPRODPath" placeholder="เช่น /certs/prod/company_prod.p12">
+                </div>
+                <div class="form-row"><label>Certificate Password</label>
+                    <input class="input" id="cpaPRODPass" type="password" placeholder="••••••••">
+                </div>
+                <div class="form-row"><label>Expired Date <span style="color:var(--danger)">*</span></label>
+                    <input class="input" id="cpaPRODExpired" type="date">
+                </div>
+                <div class="form-row"><label>Provider</label>
+                    <input class="input input-readonly" id="cpaPRODProvider" readonly>
+                </div>
+            </div>
+            <div id="cpaStep4Footer" class="modal-footer" style="display:none">
+                <button class="btn btn-outline" onclick="cpaWizardBack(3)">← Back</button>
+                <button class="btn btn-success" onclick="submitPROD()">🚀 Register PROD CPA</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
