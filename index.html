@@ -1476,52 +1476,95 @@
         .table-topbar {
             display: flex;
             align-items: center;
-            justify-content: flex-end;
-            padding: 10px 16px;
-            border-bottom: 1px solid var(--border);
-            background: #fff;
+            justify-content: space-between;
+            padding: 6px 2px;
             gap: 10px
         }
-        
-        .table-topbar .tb-total {
-            font-size: 13px;
-            color: var(--text2)
-        }
-        
-        .table-topbar .tb-sep {
-            width: 1px;
-            height: 18px;
-            background: var(--border2)
-        }
-        
-        .table-topbar .tb-label {
-            font-size: 13px;
-            color: var(--text2)
-        }
-        
-        .table-topbar .tb-sel {
-            border: 1.5px solid var(--border2);
-            border-radius: 8px;
-            padding: 5px 30px 5px 10px;
-            font-size: 13px;
+
+        .tb-total-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 3px 10px;
+            font-size: 12px;
             font-weight: 600;
-            color: var(--text);
-            background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 12 12'%3E%3Cpath fill='%231a56db' d='M6 8L1 3h10z'/%3E%3C/svg%3E") no-repeat right 9px center;
-            appearance: none;
+            color: var(--text2)
+        }
+
+        .tb-right {
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .tb-ppp-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 3px 8px;
+            font-size: 12px;
+            color: var(--text2)
+        }
+
+        .table-topbar .tb-sel {
+            border: none;
+            background: transparent;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary);
             cursor: pointer;
             font-family: inherit;
             outline: none;
-            transition: border-color .15s;
-            min-width: 64px
+            padding: 0 2px
         }
-        
-        .table-topbar .tb-sel:hover {
-            border-color: var(--primary)
+
+        .tb-pag {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2px 4px
         }
-        
-        .table-topbar .tb-sel:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(26, 86, 219, .08)
+
+        .tb-pag .pag-btn {
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            border: none;
+            background: transparent;
+            color: var(--text2);
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background .12s, color .12s
+        }
+
+        .tb-pag .pag-btn:hover:not(:disabled) {
+            background: var(--primary-dim);
+            color: var(--primary)
+        }
+
+        .tb-pag .pag-btn:disabled {
+            opacity: .3;
+            cursor: default
+        }
+
+        .tb-pag .pag-info {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            padding: 0 6px;
+            white-space: nowrap
         }
         /* ── CPA WIZARD ── */
         
@@ -1649,6 +1692,24 @@
         }
         
         .step-invalid {
+            background: #fee2e2;
+            color: #b91c1c;
+            border-color: #fca5a5
+        }
+
+        .step-4-active {
+            background: #dcfce7;
+            color: #15803d;
+            border-color: #86efac
+        }
+
+        .step-4-expiring {
+            background: #fff7ed;
+            color: #c2410c;
+            border-color: #fed7aa
+        }
+
+        .step-4-expired {
             background: #fee2e2;
             color: #b91c1c;
             border-color: #fca5a5
@@ -1787,8 +1848,8 @@
                     <div class="search-divider"></div>
                     <button class="btn btn-primary btn-sm" onclick="filterApps()">🔍 Search</button>
                 </div>
+                <div class="table-topbar" id="appsTop"></div>
                 <div class="table-wrap">
-                    <div class="table-topbar" id="appTop"></div>
                     <table>
                         <thead>
                             <tr>
@@ -1833,8 +1894,8 @@
                     <div class="search-divider"></div>
                     <button class="btn btn-primary btn-sm" onclick="filterCompanies()">🔍 Search</button>
                 </div>
+                <div class="table-topbar" id="companiesTop"></div>
                 <div class="table-wrap">
-                    <div class="table-topbar" id="compTop"></div>
                     <table>
                         <thead>
                             <tr>
@@ -1880,8 +1941,8 @@
                     <div class="search-divider"></div>
                     <button class="btn btn-primary btn-sm" onclick="filterCPAs()">🔍 Search</button>
                 </div>
+                <div class="table-topbar" id="cpasTop"></div>
                 <div class="table-wrap">
-                    <div class="table-topbar" id="cpaTop"></div>
                     <table>
                         <thead>
                             <tr>
@@ -1936,8 +1997,8 @@
                 <!-- Clickable Summary Cards -->
                 <div class="stat-grid" id="dailyStats" style="grid-template-columns:repeat(4,1fr)"></div>
                 <!-- Table with rows-per-page at top-right -->
+                <div class="table-topbar" id="dailyTop"></div>
                 <div class="table-wrap">
-                    <div class="table-topbar" id="dailyTop"></div>
                     <table>
                         <thead>
                             <tr>
@@ -1991,8 +2052,8 @@
                 <!-- Clickable Summary Cards -->
                 <div class="stat-grid" id="monthlyStats" style="grid-template-columns:repeat(4,1fr)"></div>
                 <!-- Table with rows-per-page at top-right -->
+                <div class="table-topbar" id="monthlyTop"></div>
                 <div class="table-wrap">
-                    <div class="table-topbar" id="monthlyTop"></div>
                     <table>
                         <thead>
                             <tr>
@@ -2612,6 +2673,92 @@
                 status: 'Active',
                 created: '18/03/2026'
             }, ]
+        }, {
+            id: 8,
+            name: 'KBank e-Tax',
+            protocol: 'API',
+            status: 'Active',
+            companies: ['Kasikorn Bank'],
+            created: '05/02/2025 09:00',
+            updated: '10/03/2026 08:30',
+            url: 'https://etax-api.kasikornbank.com/v2/submit',
+            headers: [['Authorization','Bearer KBankeyJhbGci-2026'],['X-Channel','H2H']],
+            tokens: [{host:'172.20.1.10',token:'eyJhbGciOiJIUzI1NiJ9.KBank.aP3kR8mT5nQ2',status:'Active',created:'01/03/2026'}]
+        }, {
+            id: 9,
+            name: 'EGAT e-Invoice',
+            protocol: 'Message Queue',
+            status: 'Active',
+            companies: ['EGAT HQ','EGAT Mae Moh'],
+            created: '10/03/2025 10:00',
+            updated: '25/03/2026 11:00',
+            mqUrl: 'amqp://egat_tax:Egat@2026!@mq.egat.co.th:5672//etax',
+            tokens: []
+        }, {
+            id: 10,
+            name: 'TRUE e-Tax',
+            protocol: 'API',
+            status: 'Active',
+            companies: ['True Corporation'],
+            created: '01/07/2025 08:00',
+            updated: '20/03/2026 13:00',
+            url: 'https://etax.true.th/rd/api/v1',
+            headers: [['X-Api-Key','TRUE-H2H-KEY-2026'],['Authorization','Bearer TRUEeyJhbGci']],
+            tokens: [{host:'10.50.2.5',token:'eyJhbGciOiJIUzI1NiJ9.TRUE.bX7nM4pQ9vR2',status:'Active',created:'15/02/2026'}]
+        }, {
+            id: 11,
+            name: 'Krungsri Tax API',
+            protocol: 'API',
+            status: 'Inactive',
+            companies: ['Bank of Ayudhya'],
+            created: '15/09/2025 09:30',
+            updated: '01/02/2026 10:00',
+            url: 'https://api.krungsri.com/etax/submit',
+            headers: [['Authorization','Bearer BAYeyJhbGci-2025']],
+            tokens: []
+        }, {
+            id: 12,
+            name: 'AIS e-Tax Connect',
+            protocol: 'Message Queue',
+            status: 'Active',
+            companies: ['Advanced Info Service'],
+            created: '01/11/2025 07:00',
+            updated: '28/03/2026 09:00',
+            mqUrl: 'amqp://ais_etax:AIS@2026!@rabbitmq.ais.th:5672//rd_etax',
+            tokens: []
+        }, {
+            id: 13,
+            name: 'Thai Union e-Tax',
+            protocol: 'API',
+            status: 'Active',
+            companies: ['Thai Union Group'],
+            created: '01/12/2025 08:30',
+            updated: '22/03/2026 14:00',
+            url: 'https://etax.thaiunion.com/api/rd/v2',
+            headers: [['Authorization','Bearer TUGeyJhbGci-2026'],['Accept','application/xml']],
+            tokens: [{host:'10.60.1.20',token:'eyJhbGciOiJIUzI1NiJ9.TUG.cN5gS3wD8kF7',status:'Active',created:'10/03/2026'}]
+        }, {
+            id: 14,
+            name: 'Mitr Phol Tax',
+            protocol: 'API',
+            status: 'Inactive',
+            companies: ['Mitr Phol Sugar'],
+            created: '10/01/2026 09:00',
+            updated: '10/01/2026 09:30',
+            url: 'https://etax.mitrphol.com/rd/submit',
+            headers: [['X-Client-ID','MITR-PROD-001']],
+            tokens: []
+        }, {
+            id: 15,
+            name: 'CP Group e-Tax',
+            protocol: 'API',
+            status: 'Active',
+            companies: ['Charoen Pokphand Foods','CP All'],
+            created: '01/02/2026 08:00',
+            updated: '01/04/2026 10:00',
+            url: 'https://etax-api.cpgroup.co.th/v3/rd',
+            headers: [['Authorization','Bearer CPeyJhbGci-2026'],['X-Tax-Year','2026']],
+            tokens: [{host:'10.70.5.1',token:'eyJhbGciOiJIUzI1NiJ9.CPGroup.dR8mL2nK6vT4',status:'Active',created:'01/04/2026'}]
         }, ];
 
         let companies = [{
@@ -2769,17 +2916,6 @@
             created: '20/02/2026 13:00',
             updated: '20/02/2026 13:00'
         }, {
-            id: 15,
-            name: 'Banpu Power',
-            taxId: '0107558000210',
-            email: 'etax@banpu.co.th',
-            rdUrl: '',
-            app: '—',
-            status: 'Active',
-            cpaRemaining: '—',
-            created: '10/01/2026 09:00',
-            updated: '10/01/2026 09:00'
-        }, {
             id: 16,
             name: 'Indorama Ventures',
             taxId: '0107556000298',
@@ -2818,11 +2954,110 @@
             taxId: '0107536000109',
             email: 'etax@cpf.co.th',
             rdUrl: '',
-            app: '—',
+            app: 'CP Group e-Tax',
             status: 'Active',
             cpaRemaining: '—',
             created: '28/03/2026 13:00',
             updated: '28/03/2026 13:00'
+        }, {
+            id: 20,
+            name: 'Kasikorn Bank',
+            taxId: '0107537000521',
+            email: 'etax@kasikornbank.com',
+            rdUrl: 'https://rdservice.rd.go.th/kbank',
+            app: 'KBank e-Tax',
+            status: 'Active',
+            cpaRemaining: '180 days',
+            created: '05/02/2025 09:00',
+            updated: '10/03/2026 08:30'
+        }, {
+            id: 21,
+            name: 'EGAT HQ',
+            taxId: '0994000158312',
+            email: 'etax@egat.co.th',
+            rdUrl: 'https://rdservice.rd.go.th/egat',
+            app: 'EGAT e-Invoice',
+            status: 'Active',
+            cpaRemaining: '220 days',
+            created: '10/03/2025 10:00',
+            updated: '25/03/2026 11:00'
+        }, {
+            id: 22,
+            name: 'EGAT Mae Moh',
+            taxId: '0994000158313',
+            email: 'etax.maemoh@egat.co.th',
+            rdUrl: 'https://rdservice.rd.go.th/egat/maemoh',
+            app: 'EGAT e-Invoice',
+            status: 'Active',
+            cpaRemaining: '220 days',
+            created: '10/03/2025 10:30',
+            updated: '25/03/2026 11:00'
+        }, {
+            id: 23,
+            name: 'True Corporation',
+            taxId: '0107536001439',
+            email: 'etax@true.th',
+            rdUrl: 'https://rdservice.rd.go.th/true',
+            app: 'TRUE e-Tax',
+            status: 'Active',
+            cpaRemaining: '90 days',
+            created: '01/07/2025 08:00',
+            updated: '20/03/2026 13:00'
+        }, {
+            id: 24,
+            name: 'Bank of Ayudhya',
+            taxId: '0107537000077',
+            email: 'etax@krungsri.com',
+            rdUrl: '',
+            app: 'Krungsri Tax API',
+            status: 'Inactive',
+            cpaRemaining: 'Expired',
+            created: '15/09/2025 09:30',
+            updated: '01/02/2026 10:00'
+        }, {
+            id: 25,
+            name: 'Advanced Info Service',
+            taxId: '0107536001451',
+            email: 'etax@ais.th',
+            rdUrl: 'https://rdservice.rd.go.th/ais',
+            app: 'AIS e-Tax Connect',
+            status: 'Active',
+            cpaRemaining: '150 days',
+            created: '01/11/2025 07:00',
+            updated: '28/03/2026 09:00'
+        }, {
+            id: 26,
+            name: 'Thai Union Group',
+            taxId: '0107554000206',
+            email: 'etax@thaiunion.com',
+            rdUrl: 'https://rdservice.rd.go.th/tug',
+            app: 'Thai Union e-Tax',
+            status: 'Active',
+            cpaRemaining: '260 days',
+            created: '01/12/2025 08:30',
+            updated: '22/03/2026 14:00'
+        }, {
+            id: 27,
+            name: 'Mitr Phol Sugar',
+            taxId: '0107537000398',
+            email: 'etax@mitrphol.com',
+            rdUrl: '',
+            app: 'Mitr Phol Tax',
+            status: 'Inactive',
+            cpaRemaining: '—',
+            created: '10/01/2026 09:00',
+            updated: '10/01/2026 09:30'
+        }, {
+            id: 28,
+            name: 'CP All',
+            taxId: '0107537001509',
+            email: 'etax@cpall.co.th',
+            rdUrl: 'https://rdservice.rd.go.th/cpall',
+            app: 'CP Group e-Tax',
+            status: 'Active',
+            cpaRemaining: '—',
+            created: '01/02/2026 08:00',
+            updated: '01/04/2026 10:00'
         }, ];
 
         // wizardStep: 0=none, 1=RD appt done, 2=UAT registered, 3=XML testing, 4=PROD complete
@@ -3101,6 +3336,104 @@
                 daysRemaining: 0,
                 created: '28/03/2026 14:20',
                 updated: '28/03/2026 14:20'
+            }, {
+                id: 19,
+                cpaId: 'CPA-2025-009',
+                wizardStep: 4,
+                xmlStatus: 'Verified',
+                company: 'Kasikorn Bank',
+                taxId: '0107537000521',
+                app: 'KBank e-Tax',
+                provider: 'Host to Host',
+                expire: '28/02/2027',
+                status: 'Active',
+                daysRemaining: 330,
+                created: '05/02/2025 09:00',
+                updated: '10/03/2026 08:30'
+            }, {
+                id: 20,
+                cpaId: 'CPA-2025-010',
+                wizardStep: 4,
+                xmlStatus: 'Verified',
+                company: 'EGAT HQ',
+                taxId: '0994000158312',
+                app: 'EGAT e-Invoice',
+                provider: 'UIH Service Provider',
+                expire: '31/12/2026',
+                status: 'Active',
+                daysRemaining: 270,
+                created: '10/03/2025 10:00',
+                updated: '25/03/2026 11:00'
+            }, {
+                id: 21,
+                cpaId: 'CPA-2025-011',
+                wizardStep: 4,
+                xmlStatus: 'Verified',
+                company: 'True Corporation',
+                taxId: '0107536001439',
+                app: 'TRUE e-Tax',
+                provider: 'BNG Service Provider',
+                expire: '05/07/2026',
+                status: 'Expiring Soon',
+                daysRemaining: 89,
+                created: '01/07/2025 08:00',
+                updated: '20/03/2026 13:00'
+            }, {
+                id: 22,
+                cpaId: 'CPA-2025-012',
+                wizardStep: 4,
+                xmlStatus: 'Verified',
+                company: 'Advanced Info Service',
+                taxId: '0107536001451',
+                app: 'AIS e-Tax Connect',
+                provider: 'Host to Host',
+                expire: '31/08/2026',
+                status: 'Active',
+                daysRemaining: 147,
+                created: '01/11/2025 07:00',
+                updated: '28/03/2026 09:00'
+            }, {
+                id: 23,
+                cpaId: 'CPA-2025-013',
+                wizardStep: 4,
+                xmlStatus: 'Verified',
+                company: 'Thai Union Group',
+                taxId: '0107554000206',
+                app: 'Thai Union e-Tax',
+                provider: 'Host to Host',
+                expire: '30/11/2026',
+                status: 'Active',
+                daysRemaining: 237,
+                created: '01/12/2025 08:30',
+                updated: '22/03/2026 14:00'
+            }, {
+                id: 24,
+                cpaId: 'CPA-2025-014',
+                wizardStep: 4,
+                xmlStatus: 'Verified',
+                company: 'EGAT Mae Moh',
+                taxId: '0994000158313',
+                app: 'EGAT e-Invoice',
+                provider: 'UIH Service Provider',
+                expire: '31/12/2026',
+                status: 'Active',
+                daysRemaining: 270,
+                created: '10/03/2025 10:30',
+                updated: '25/03/2026 11:00'
+            }, {
+                id: 25,
+                cpaId: '',
+                wizardStep: 2,
+                xmlStatus: 'Pending',
+                company: 'CP All',
+                taxId: '0107537001509',
+                app: '—',
+                provider: 'Host to Host',
+                expire: '—',
+                status: '—',
+                daysRemaining: 0,
+                created: '01/04/2026 10:00',
+                updated: '01/04/2026 10:00'
             },
         ];
 
@@ -3408,26 +3741,31 @@
                 pages = Math.max(1, Math.ceil(tot / p.perPage));
             const s = tot ? (p.page - 1) * p.perPage + 1 : 0,
                 e = Math.min(p.page * p.perPage, tot);
-            // PPP + total info at top-right
+            // รวม rows-per-page + navigation ไว้บนตารางทั้งหมด
             const topEl = document.getElementById(key + 'Top');
             if (topEl) {
                 topEl.innerHTML = `
-      <span class="tb-total">${tot.toLocaleString()} รายการ</span>
-      <div class="tb-sep"></div>
-      <span class="tb-label">Rows per page</span>
-      <select class="tb-sel" onchange="changePPP('${key}',parseInt(this.value))">
-        ${[10,25,50,100].map(n=>`<option value="${n}"${p.perPage==n?' selected':''}>${n}</option>`).join('')}
-      </select>`;
-  }
-  // Nav at bottom
-  el.innerHTML=`<div class="pag-bar">
-    <button class="pag-btn" onclick="goPage('${key}',1)" ${p.page<=1?'disabled':''}>«</button>
-    <button class="pag-btn" onclick="goPage('${key}',${p.page-1})" ${p.page<=1?'disabled':''}>‹</button>
-    <span class="pag-cur" style="padding:0 10px">${p.page} / ${pages}</span>
-    <button class="pag-btn" onclick="goPage('${key}',${p.page+1})" ${p.page>=pages?'disabled':''}>›</button>
-    <button class="pag-btn" onclick="goPage('${key}',${pages})" ${p.page>=pages?'disabled':''}>»</button>
-    <span class="pag-info">${s}–${e} of ${tot.toLocaleString()}</span>
-  </div>`;
+      <span class="tb-total-badge">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+        ${tot.toLocaleString()} รายการ
+      </span>
+      <div class="tb-right">
+        <div class="tb-ppp-wrap">
+          <span>แสดง</span>
+          <select class="tb-sel" onchange="changePPP('${key}',parseInt(this.value))">
+            ${[10,25,50,100].map(n=>`<option value="${n}"${p.perPage==n?' selected':''}>${n}</option>`).join('')}
+          </select>
+          <span>รายการ</span>
+        </div>
+        <div class="tb-pag">
+          <button class="pag-btn" onclick="goPage('${key}',${p.page-1})" ${p.page<=1?'disabled':''} title="ก่อนหน้า">‹</button>
+          <span class="pag-info">${p.page} / ${pages}</span>
+          <button class="pag-btn" onclick="goPage('${key}',${p.page+1})" ${p.page>=pages?'disabled':''} title="ถัดไป">›</button>
+        </div>
+      </div>`;
+            }
+            // ล้างด้านล่าง
+            el.innerHTML = '';
 }
 
 // Sync PPP select with pager when pager changes
@@ -4095,31 +4433,22 @@ function renderCPAs(list){
       let statusCell='', actionCell='', expireTxt='—';
 
       if(step===0){
-        statusCell=`<span class="cpa-step-badge step-none">Not Started</span>`;
+        statusCell=`<span class="cpa-step-badge step-none">—</span>`;
         actionCell='';
       } else if(step===1){
-        statusCell=`<span class="cpa-step-badge step-1">Step 1: Appointment Scheduled</span>`;
-        actionCell=`<button class="btn btn-primary btn-xs" onclick="continueWizard(${cr.id},2)">NEXT STEP →</button>`;
+        statusCell=`<span class="cpa-step-badge step-2">Step 2</span>`;
+        actionCell=`<button class="btn btn-primary btn-xs" onclick="continueWizard(${cr.id},2)">Continue</button>`;
       } else if(step===2){
-        statusCell=`<span class="cpa-step-badge step-2">Step 2: UAT Registered</span>`;
-        actionCell=`<button class="btn btn-primary btn-xs" onclick="continueWizard(${cr.id},3)">NEXT STEP →</button>`;
+        statusCell=`<span class="cpa-step-badge step-verified">Step 3</span>`;
+        actionCell=`<button class="btn btn-primary btn-xs" onclick="continueWizard(${cr.id},3)">Continue</button>`;
       } else if(step===3){
-        const xmlSt=cr.xmlStatus||'Pending';
-        if(xmlSt==='Pending'){
-          statusCell=`<span class="cpa-step-badge step-pending">Step 3: Testing Pending</span>`;
-          actionCell=`<button class="btn btn-outline btn-xs" style="color:var(--warn);border-color:var(--warn)" onclick="simulateXMLResult(${cr.id})">⚙ Run Test</button>`;
-        } else if(xmlSt==='Verified'){
-          statusCell=`<span class="cpa-step-badge step-verified">Step 3: Verified ✓</span>`;
-          actionCell=`<button class="btn btn-primary btn-xs" onclick="continueWizard(${cr.id},4)">NEXT STEP →</button>`;
-        } else {
-          statusCell=`<span class="cpa-step-badge step-invalid">Step 3: Invalid ✗</span>`;
-          actionCell=`<button class="btn-edit-info" onclick="openXMLErrorPopup(${cr.id})">✏ Edit Information</button>`;
-        }
+        statusCell=`<span class="cpa-step-badge step-1">Step 4</span>`;
+        actionCell=`<button class="btn btn-primary btn-xs" onclick="continueWizard(${cr.id},4)">Continue</button>`;
       } else {
-        // Step 4 complete — final status
         expireTxt=cr.expire||'—';
-        const pillCls=cr.status==='Active'?'is-active':cr.status==='Expiring Soon'?'is-expiring':'is-inactive';
-        statusCell=`<span class="status-pill ${pillCls}">${cr.status}</span>`;
+        const st=cr.status||'Active';
+        const badgeCls=st==='Active'?'step-4-active':st==='Expiring Soon'?'step-4-expiring':'step-4-expired';
+        statusCell=`<span class="cpa-step-badge ${badgeCls}">${st}</span>`;
         actionCell=`<button class="btn btn-outline btn-xs" onclick="openViewCPA(${cr.id})">View</button>`;
       }
 
@@ -4779,14 +5108,28 @@ function openRegisterCPA(){
   sel1.innerHTML = '<option value="">— Select Company —</option>';
   companies.forEach(co=>{const opt=document.createElement('option');opt.value=co.name;opt.textContent=`${co.name} (${co.taxId})`;sel1.appendChild(opt)});
   // Reset fields
-  ['cpaApptDate','cpaApptNote','cpaUATPath','cpaUATPass','cpaUATExpired','cpaPRODPath','cpaPRODPass','cpaPRODExpired'].forEach(id=>{
+  ['cpaApptDate','cpaUATPath','cpaUATNote','cpaXMLNote','cpaPRODPath','cpaPRODNote'].forEach(id=>{
     const el=document.getElementById(id); if(el)el.value='';
+  });
+  // Lock note fields back to readonly
+  ['cpaUATNote','cpaXMLNote','cpaPRODNote'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.setAttribute('readonly','');el.classList.add('input-readonly');}
   });
   document.getElementById('cpaUATCompany').value='';
   document.getElementById('cpaPRODCompany').value='';
-  ['tiv-check','dbn-check','cdn-check','rct-check'].forEach(id=>{
-    const el=document.getElementById(id); if(el)el.textContent='';
+  document.getElementById('cpaUATLocation').value='';
+  document.getElementById('cpaPRODLocation').value='';
+  // Reset upload filenames
+  ['tiv-name','dbn-name','cdn-name','rct-name'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.textContent='ยังไม่ได้เลือกไฟล์';el.style.color='';}
   });
+  ['xmlTIV','xmlDBN','xmlCDN','xmlRCT'].forEach(id=>{
+    const el=document.getElementById(id); if(el)el.value='';
+  });
+  xmlUploadResults=[];
+  renderXMLResults();
   _showCPAStep(1);
   openModal('overlayRegisterCPA');
 }
@@ -4808,6 +5151,7 @@ function _showCPAStep(step){
     4:'🚀 Register CPA — PROD Environment'
   };
   document.getElementById('cpaWizardTitle').textContent = titles[step];
+  if(step===3) renderXMLResults();
 }
 
 function cpaWizardNext(fromStep){
@@ -4846,48 +5190,156 @@ function cpaWizardBack(step){ _showCPAStep(step); }
 function submitUAT(){
   const comp = document.getElementById('cpaUATCompany').value;
   const path = document.getElementById('cpaUATPath').value.trim();
-  const exp  = document.getElementById('cpaUATExpired').value;
-  if(!path||!exp){showToast('กรุณากรอกข้อมูลให้ครบ','warn');return}
-  const prov = document.getElementById('cpaUATProvider').value;
+  const loc  = document.getElementById('cpaUATLocation').value;
+  if(!path||!loc){showToast('กรุณากรอกข้อมูลให้ครบ','warn');return}
   // Update CPA record to step 2
   const rec = cpas.find(x=>x.id===currentWizardCPAId);
-  if(rec){rec.wizardStep=2;rec.provider=prov;rec.updated=fmtDate(new Date());}
+  if(rec){rec.wizardStep=2;rec.uatLocation=loc;rec.updated=fmtDate(new Date());}
   // Pre-fill PROD
   document.getElementById('cpaPRODCompany').value = comp||rec?.company||'';
-  document.getElementById('cpaPRODProvider').value = prov;
   renderCPAs();
   _showCPAStep(3);
 }
 
 function submitPROD(){
   const path = document.getElementById('cpaPRODPath').value.trim();
-  const exp  = document.getElementById('cpaPRODExpired').value;
-  if(!path||!exp){showToast('กรุณากรอกข้อมูลให้ครบ','warn');return}
+  const loc  = document.getElementById('cpaPRODLocation').value;
+  if(!path||!loc){showToast('กรุณากรอกข้อมูลให้ครบ','warn');return}
   const comp = document.getElementById('cpaPRODCompany').value;
-  const prov = document.getElementById('cpaPRODProvider').value;
   const co = companies.find(x=>x.name===comp);
-  const toDate = new Date(exp), today = new Date();
-  const days = Math.max(0, Math.floor((toDate-today)/(1000*60*60*24)));
-  const status = days===0?'Expired':days<=30?'Expiring Soon':'Active';
-  const fmtShort = d=>{const dt=new Date(d);return `${pad(dt.getDate())}/${pad(dt.getMonth()+1)}/${dt.getFullYear()}`};
   // Update existing record if continuing from wizard
   const existing = cpas.find(x=>x.id===currentWizardCPAId);
   if(existing){
     existing.wizardStep=4; existing.xmlStatus='Verified';
-    existing.expire=fmtShort(exp); existing.provider=prov;
-    existing.status=status; existing.daysRemaining=days;
+    existing.prodLocation=loc; existing.status='Active';
     existing.updated=fmtDate(new Date());
     if(!existing.cpaId||existing.cpaId==='') existing.cpaId='CPA-'+new Date().getFullYear()+'-'+String(cpas.length).padStart(3,'0');
   } else {
     const newId='CPA-'+new Date().getFullYear()+'-'+String(cpas.length+1).padStart(3,'0');
     cpas.push({id:Date.now(),cpaId:newId,wizardStep:4,xmlStatus:'Verified',
-      company:comp,taxId:co?co.taxId:'',app:co?co.app:'',provider:prov,
-      expire:fmtShort(exp),status,daysRemaining:days,
+      company:comp,taxId:co?co.taxId:'',app:co?co.app:'',prodLocation:loc,
+      status:'Active',daysRemaining:0,
       created:fmtDate(new Date()),updated:fmtDate(new Date())});
   }
-  if(co) co.cpaRemaining = status==='Expired'?'Expired':days+' days';
+  if(co) co.cpaRemaining = 'Active';
   buildNotifications(); renderCPAs(); closeModal('overlayRegisterCPA');
   showToast(`Register CPA PROD สำหรับ "${comp}" สำเร็จ 🎉`);
+}
+
+let xmlUploadResults = [
+  {id:1,selected:false,convId:'CONV-2026-00001',invoiceId:'INV-001-0001',type:'TIV',status:'rd accepted',fileName:'tiv_uat_test.xml',lastChange:'01/04/2026 09:15'},
+  {id:2,selected:false,convId:'CONV-2026-00002',invoiceId:'INV-001-0002',type:'TIV',status:'rd acknowledged',fileName:'tiv_uat_test.xml',lastChange:'01/04/2026 09:16'},
+  {id:3,selected:false,convId:'CONV-2026-00003',invoiceId:'INV-001-0003',type:'TIV',status:'rd rejected',fileName:'tiv_uat_test.xml',lastChange:'01/04/2026 09:17'},
+  {id:4,selected:false,convId:'CONV-2026-00004',invoiceId:'DBN-002-0001',type:'DBN',status:'rd accepted',fileName:'dbn_uat_test.xml',lastChange:'01/04/2026 09:20'},
+  {id:5,selected:false,convId:'CONV-2026-00005',invoiceId:'DBN-002-0002',type:'DBN',status:'rd acknowledged',fileName:'dbn_uat_test.xml',lastChange:'01/04/2026 09:21'},
+  {id:6,selected:false,convId:'CONV-2026-00006',invoiceId:'CDN-003-0001',type:'CDN',status:'rd accepted',fileName:'cdn_uat_test.xml',lastChange:'01/04/2026 09:25'},
+  {id:7,selected:false,convId:'CONV-2026-00007',invoiceId:'CDN-003-0002',type:'CDN',status:'rd rejected',fileName:'cdn_uat_test.xml',lastChange:'01/04/2026 09:26'},
+  {id:8,selected:false,convId:'CONV-2026-00008',invoiceId:'CDN-003-0003',type:'CDN',status:'rd acknowledged',fileName:'cdn_uat_test.xml',lastChange:'01/04/2026 09:27'},
+  {id:9,selected:false,convId:'CONV-2026-00009',invoiceId:'RCT-004-0001',type:'RCT',status:'rd accepted',fileName:'rct_uat_test.xml',lastChange:'01/04/2026 09:30'},
+  {id:10,selected:false,convId:'CONV-2026-00010',invoiceId:'RCT-004-0002',type:'RCT',status:'rd acknowledged',fileName:'rct_uat_test.xml',lastChange:'01/04/2026 09:31'},
+  {id:11,selected:false,convId:'CONV-2026-00011',invoiceId:'INV-001-0004',type:'TIV',status:'rd accepted',fileName:'tiv_uat_test2.xml',lastChange:'02/04/2026 10:05'},
+  {id:12,selected:false,convId:'CONV-2026-00012',invoiceId:'DBN-002-0003',type:'DBN',status:'rd rejected',fileName:'dbn_uat_test2.xml',lastChange:'02/04/2026 10:10'},
+];
+let _xmlResultIdSeq = 13;
+
+const _xmlTypeMeta = {
+  TIV:{label:'TIV',color:'var(--primary)'},
+  DBN:{label:'DBN',color:'#f59e0b'},
+  CDN:{label:'CDN',color:'#8b5cf6'},
+  RCT:{label:'RCT',color:'#10b981'}
+};
+const _xmlStatuses = ['rd acknowledged','rd accepted','rd rejected'];
+const _xmlStatusStyle = {
+  'rd acknowledged':'background:#fef9c3;color:#713f12',
+  'rd accepted':'background:#dcfce7;color:#166534',
+  'rd rejected':'background:#fee2e2;color:#991b1b'
+};
+
+function markXMLNew(input, nameId, type){
+  if(!input.files[0]) return;
+  const fname = input.files[0].name;
+  const el = document.getElementById(nameId);
+  if(el){el.textContent='✓ '+fname; el.style.color='var(--accent)';}
+  // สร้าง mock rows ใน result table
+  const now = fmtDate(new Date());
+  const pad2 = n=>String(n).padStart(2,'0');
+  const statuses = ['rd acknowledged','rd accepted','rd rejected'];
+  const count = Math.floor(Math.random()*2)+1;
+  for(let i=0;i<count;i++){
+    const seq = _xmlResultIdSeq++;
+    xmlUploadResults.push({
+      id: seq,
+      selected: false,
+      convId: 'CONV-'+new Date().getFullYear()+'-'+String(seq).padStart(5,'0'),
+      invoiceId: 'INV-'+pad2(Math.floor(Math.random()*99)+1)+'-'+String(seq).padStart(4,'0'),
+      type: type,
+      status: statuses[Math.floor(Math.random()*statuses.length)],
+      fileName: fname,
+      lastChange: now
+    });
+  }
+  renderXMLResults();
+}
+
+function renderXMLResults(){
+  const tbody = document.getElementById('xmlResultBody');
+  if(!tbody) return;
+  if(xmlUploadResults.length===0){
+    tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:18px;color:var(--text3);font-size:11px">ยังไม่มีข้อมูล — อัปโหลดไฟล์และกด Submit เพื่อดูผล</td></tr>';
+    return;
+  }
+  const meta = _xmlTypeMeta;
+  const statusStyle = _xmlStatusStyle;
+  tbody.innerHTML = xmlUploadResults.map(r=>`
+    <tr style="border-bottom:1px solid var(--border);transition:background .12s" onmouseenter="this.style.background='var(--bg2)'" onmouseleave="this.style.background=''">
+      <td style="padding:6px 8px;text-align:center"><input type="checkbox" data-xmlid="${r.id}" ${r.selected?'checked':''} onchange="toggleXMLRow(this,${r.id})"></td>
+      <td style="padding:6px 8px;font-family:monospace;font-size:10px;color:var(--text2)">${r.convId}</td>
+      <td style="padding:6px 8px;font-family:monospace;font-size:10px;color:var(--text2)">${r.invoiceId}</td>
+      <td style="padding:6px 8px;text-align:center"><span style="background:${meta[r.type]?.color||'#888'};color:#fff;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700">${r.type}</span></td>
+      <td style="padding:6px 8px"><span style="border-radius:4px;padding:2px 7px;font-size:10px;font-weight:600;${statusStyle[r.status]||''}">${r.status}</span></td>
+      <td style="padding:6px 8px;text-align:center"><button class="btn btn-ghost btn-sm" style="font-size:10px;padding:2px 8px" onclick="downloadXMLResponse(${r.id})">⬇ Download</button></td>
+      <td style="padding:6px 8px;font-size:10px;color:var(--text3);white-space:nowrap">${r.lastChange}</td>
+      <td style="padding:6px 8px;text-align:center"><button class="btn btn-ghost btn-sm" style="font-size:10px;padding:2px 8px" onclick="viewXMLResult(${r.id})">👁 View</button></td>
+    </tr>`).join('');
+}
+
+function toggleXMLRow(cb, id){
+  const r = xmlUploadResults.find(x=>x.id===id);
+  if(r) r.selected = cb.checked;
+}
+
+function toggleSelectAllXML(cb){
+  xmlUploadResults.forEach(r=>r.selected=cb.checked);
+  renderXMLResults();
+  if(cb.checked) document.querySelectorAll('#xmlResultBody input[type=checkbox]').forEach(c=>c.checked=true);
+}
+
+function refreshXMLResults(){
+  xmlUploadResults.forEach(r=>{
+    if(r.status==='rd acknowledged') r.status=Math.random()>0.4?'rd accepted':'rd rejected';
+    r.lastChange=fmtDate(new Date());
+  });
+  renderXMLResults();
+  showToast('รีเฟรชข้อมูลแล้ว');
+}
+
+function exportXMLResults(){
+  if(xmlUploadResults.length===0){showToast('ไม่มีข้อมูลให้ Export','warn');return;}
+  const rows=[['Conversation ID','Invoice ID','Type','Status','File Name','Last Status Change']];
+  xmlUploadResults.forEach(r=>rows.push([r.convId,r.invoiceId,r.type,r.status,r.fileName,r.lastChange]));
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(rows),'XML Results');
+  XLSX.writeFile(wb,'XML_Upload_Results.xlsx');
+}
+
+function downloadXMLResponse(id){
+  showToast('กำลังดาวน์โหลด Response...');
+}
+
+function viewXMLResult(id){
+  const r=xmlUploadResults.find(x=>x.id===id);
+  if(!r) return;
+  showToast(`${r.convId} | ${r.invoiceId} | ${r.type} | ${r.status}`);
 }
 
 function triggerXML(type){ document.getElementById('xml'+type.toUpperCase()).click(); }
@@ -4897,6 +5349,50 @@ function markXML(input, checkId){
 }
 
 // stale renderCPAs removed — using wizard-aware version above
+
+const _cpaAllNoteIds=['cpaUATNote','cpaXMLNote','cpaPRODNote'];
+
+function syncCPANote(src){
+  _cpaAllNoteIds.forEach(id=>{
+    if(id===src.id)return;
+    const el=document.getElementById(id);
+    if(el)el.value=src.value;
+  });
+}
+
+function editStep(step){
+  const noteMap={2:'cpaUATNote',3:'cpaXMLNote',4:'cpaPRODNote'};
+  const el=document.getElementById(noteMap[step]);
+  if(el){el.removeAttribute('readonly');el.classList.remove('input-readonly');el.focus();}
+  // ปลดล็อค Certificate และ Location ด้วยถ้าอยู่ใน step 2/4
+  if(step===2){
+    ['cpaUATPath'].forEach(id=>{const e=document.getElementById(id);if(e){e.removeAttribute('readonly');e.classList.remove('input-readonly');}});
+    document.getElementById('cpaUATLocation').removeAttribute('disabled');
+  }
+  if(step===4){
+    ['cpaPRODPath'].forEach(id=>{const e=document.getElementById(id);if(e){e.removeAttribute('readonly');e.classList.remove('input-readonly');}});
+    document.getElementById('cpaPRODLocation').removeAttribute('disabled');
+  }
+  showToast('แก้ไขหมายเหตุได้แล้ว');
+}
+
+function saveStep(step){
+  const stepNames={2:'UAT',3:'Upload XML',4:'PROD'};
+  const noteMap={2:'cpaUATNote',3:'cpaXMLNote',4:'cpaPRODNote'};
+  const el=document.getElementById(noteMap[step]);
+  if(el){
+    const val=el.value;
+    // sync ทุก textarea แล้วล็อคกลับ readonly
+    _cpaAllNoteIds.forEach(id=>{
+      const t=document.getElementById(id);
+      if(t){t.value=val;t.setAttribute('readonly','');t.classList.add('input-readonly');}
+    });
+    // บันทึกลง record เป็น field เดียว
+    const rec=cpas.find(x=>x.id===currentWizardCPAId);
+    if(rec){rec.cpaNote=val;rec.updated=fmtDate(new Date());}
+  }
+  showToast(`บันทึกหมายเหตุ ${stepNames[step]||''} สำเร็จ ✅`);
+}
 
 // ═══════════════════════════════════════════════════════
 //  EXPORT FUNCTIONS (updated to use doExport wrapper)
@@ -4958,11 +5454,24 @@ function continueWizard(id, toStep){
   }
   document.getElementById('cpaUATCompany').value  = cr.company;
   document.getElementById('cpaPRODCompany').value = cr.company;
-  document.getElementById('cpaPRODProvider').value = cr.provider||'Host to Host';
-  // Reset XML uploads
-  ['tiv-check','dbn-check','cdn-check','rct-check'].forEach(id2=>{
-    const el=document.getElementById(id2); if(el)el.textContent='';
+  document.getElementById('cpaUATLocation').value  = cr.uatLocation||'';
+  document.getElementById('cpaPRODLocation').value = cr.prodLocation||'';
+  // โหลด note ของ record นี้ และล็อค readonly
+  // โหลด note เดียวกันให้ทุก step และล็อค readonly
+  _cpaAllNoteIds.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.value=cr.cpaNote||'';el.setAttribute('readonly','');el.classList.add('input-readonly');}
   });
+  // Reset XML uploads
+  ['tiv-name','dbn-name','cdn-name','rct-name'].forEach(id2=>{
+    const el=document.getElementById(id2);
+    if(el){el.textContent='ยังไม่ได้เลือกไฟล์';el.style.color='';}
+  });
+  ['xmlTIV','xmlDBN','xmlCDN','xmlRCT'].forEach(id2=>{
+    const el=document.getElementById(id2); if(el)el.value='';
+  });
+  xmlUploadResults=[];
+  renderXMLResults();
   _showCPAStep(toStep);
   openModal('overlayRegisterCPA');
 }
@@ -5174,10 +5683,6 @@ navigate('application');
                     <label>วันที่นัดหมาย (ข้อมูลอ้างอิง)</label>
                     <input class="input" id="cpaApptDate" type="date" placeholder="วันที่นัดหมายกับ RD">
                 </div>
-                <div class="form-row">
-                    <label>หมายเหตุ</label>
-                    <textarea class="input" id="cpaApptNote" rows="2" placeholder="หมายเหตุการนัดหมาย..." style="resize:vertical"></textarea>
-                </div>
             </div>
             <div id="cpaStep1Footer" class="modal-footer">
                 <button class="btn btn-outline" onclick="closeModal('overlayRegisterCPA')">Cancel</button>
@@ -5192,21 +5697,25 @@ navigate('application');
                 <div class="form-row"><label>Company <span style="color:var(--danger)">*</span></label>
                     <input class="input input-readonly" id="cpaUATCompany" readonly placeholder="Auto-filled from Step 1">
                 </div>
-                <div class="form-row"><label>Certificate Path (.p12 / .pfx) <span style="color:var(--danger)">*</span></label>
-                    <input class="input" id="cpaUATPath" placeholder="เช่น /certs/uat/company_uat.p12">
+                <div class="form-row"><label>Certificate (.xml) <span style="color:var(--danger)">*</span></label>
+                    <input class="input" id="cpaUATPath" placeholder="เช่น /certs/uat/company_uat.xml">
                 </div>
-                <div class="form-row"><label>Certificate Password</label>
-                    <input class="input" id="cpaUATPass" type="password" placeholder="••••••••">
+                <div class="form-row"><label>Certificate Location <span style="color:var(--danger)">*</span></label>
+                    <select class="select" id="cpaUATLocation">
+                        <option value="">— Select Location —</option>
+                        <option value="Storage">Storage</option>
+                        <option value="AWS Secret Manager">AWS Secret Manager</option>
+                    </select>
                 </div>
-                <div class="form-row"><label>Expired Date <span style="color:var(--danger)">*</span></label>
-                    <input class="input" id="cpaUATExpired" type="date">
-                </div>
-                <div class="form-row"><label>Provider</label>
-                    <select class="select" id="cpaUATProvider">
-          <option value="Host to Host">Host to Host</option>
-          <option value="BNG Service Provider">BNG Service Provider</option>
-          <option value="UIH Service Provider">UIH Service Provider</option>
-        </select>
+                <div class="form-row" style="flex-direction:column;gap:6px">
+                    <div style="display:flex;justify-content:space-between;align-items:center">
+                        <label style="margin:0">หมายเหตุ</label>
+                        <div style="display:flex;gap:6px">
+                            <button class="btn btn-ghost btn-sm" onclick="editStep(2)">✏ Edit</button>
+                            <button class="btn btn-success btn-sm" onclick="saveStep(2)">💾 Save</button>
+                        </div>
+                    </div>
+                    <textarea class="input input-readonly" id="cpaUATNote" rows="2" placeholder="หมายเหตุ..." style="resize:vertical" readonly oninput="syncCPANote(this)"></textarea>
                 </div>
             </div>
             <div id="cpaStep2Footer" class="modal-footer" style="display:none">
@@ -5219,36 +5728,108 @@ navigate('application');
                 <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 14px;font-size:12px;color:#166534">
                     ✅ <strong>Register UAT สำเร็จ!</strong> — ทดสอบส่ง XML ทั้ง 4 ประเภทให้ครบก่อนดำเนินการต่อ
                 </div>
-                <div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:4px">อัปโหลด XML ทดสอบ (4 ประเภท)</div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-                    <div style="border:2px dashed var(--border2);border-radius:10px;padding:20px 16px;text-align:center;cursor:pointer;transition:border-color .15s" onclick="triggerXML('tiv')" onmouseenter="this.style.borderColor='var(--primary)'" onmouseleave="this.style.borderColor='var(--border2)'">
-                        <div style="font-size:24px;margin-bottom:6px">📄</div>
-                        <div style="font-size:13px;font-weight:700;color:var(--text)">TIV</div>
-                        <div style="font-size:11px;color:var(--text3);margin-top:2px">ใบกำกับภาษี</div>
-                        <input type="file" id="xmlTIV" accept=".xml" style="display:none" onchange="markXML(this,'tiv-check')">
-                        <div id="tiv-check" style="font-size:11px;color:var(--accent);margin-top:6px;min-height:16px"></div>
+                <!-- XML Type Description -->
+                <div style="border:1px solid var(--border);border-radius:10px;padding:12px 14px;background:var(--bg2)">
+                    <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px">📋 XML ที่ต้องส่งทดสอบ 4 ประเภท</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+                        <div style="display:flex;gap:8px;align-items:flex-start;font-size:11px;color:var(--text2)">
+                            <span style="background:var(--primary);color:#fff;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700;flex-shrink:0">TIV</span>
+                            <span>Tax Invoice / ใบกำกับภาษีอิเล็กทรอนิกส์</span>
+                        </div>
+                        <div style="display:flex;gap:8px;align-items:flex-start;font-size:11px;color:var(--text2)">
+                            <span style="background:#f59e0b;color:#fff;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700;flex-shrink:0">DBN</span>
+                            <span>Debit Note / ใบเพิ่มหนี้อิเล็กทรอนิกส์</span>
+                        </div>
+                        <div style="display:flex;gap:8px;align-items:flex-start;font-size:11px;color:var(--text2)">
+                            <span style="background:#8b5cf6;color:#fff;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700;flex-shrink:0">CDN</span>
+                            <span>Credit Note / ใบลดหนี้อิเล็กทรอนิกส์</span>
+                        </div>
+                        <div style="display:flex;gap:8px;align-items:flex-start;font-size:11px;color:var(--text2)">
+                            <span style="background:#10b981;color:#fff;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700;flex-shrink:0">RCT</span>
+                            <span>Receipt / ใบรับอิเล็กทรอนิกส์</span>
+                        </div>
                     </div>
-                    <div style="border:2px dashed var(--border2);border-radius:10px;padding:20px 16px;text-align:center;cursor:pointer;transition:border-color .15s" onclick="triggerXML('dbn')" onmouseenter="this.style.borderColor='var(--primary)'" onmouseleave="this.style.borderColor='var(--border2)'">
-                        <div style="font-size:24px;margin-bottom:6px">📋</div>
-                        <div style="font-size:13px;font-weight:700;color:var(--text)">DBN</div>
-                        <div style="font-size:11px;color:var(--text3);margin-top:2px">ใบเพิ่มหนี้</div>
-                        <input type="file" id="xmlDBN" accept=".xml" style="display:none" onchange="markXML(this,'dbn-check')">
-                        <div id="dbn-check" style="font-size:11px;color:var(--accent);margin-top:6px;min-height:16px"></div>
+                </div>
+
+                <!-- Upload 1-Column -->
+                <div style="display:flex;flex-direction:column;gap:6px">
+                    <div style="font-size:12px;font-weight:600;color:var(--text2)">อัปโหลดไฟล์ XML</div>
+                    <div style="display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:8px;padding:9px 12px">
+                        <span style="background:var(--primary);color:#fff;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;flex-shrink:0">TIV</span>
+                        <div style="flex:1;min-width:0">
+                            <div style="font-size:12px;font-weight:600;color:var(--text)">Tax Invoice — ใบกำกับภาษี</div>
+                            <div id="tiv-name" style="font-size:10px;color:var(--text3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">ยังไม่ได้เลือกไฟล์</div>
+                        </div>
+                        <input type="file" id="xmlTIV" accept=".xml" style="display:none" onchange="markXMLNew(this,'tiv-name','TIV')">
+                        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('xmlTIV').click()">📁 Upload</button>
                     </div>
-                    <div style="border:2px dashed var(--border2);border-radius:10px;padding:20px 16px;text-align:center;cursor:pointer;transition:border-color .15s" onclick="triggerXML('cdn')" onmouseenter="this.style.borderColor='var(--primary)'" onmouseleave="this.style.borderColor='var(--border2)'">
-                        <div style="font-size:24px;margin-bottom:6px">📝</div>
-                        <div style="font-size:13px;font-weight:700;color:var(--text)">CDN</div>
-                        <div style="font-size:11px;color:var(--text3);margin-top:2px">ใบลดหนี้</div>
-                        <input type="file" id="xmlCDN" accept=".xml" style="display:none" onchange="markXML(this,'cdn-check')">
-                        <div id="cdn-check" style="font-size:11px;color:var(--accent);margin-top:6px;min-height:16px"></div>
+                    <div style="display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:8px;padding:9px 12px">
+                        <span style="background:#f59e0b;color:#fff;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;flex-shrink:0">DBN</span>
+                        <div style="flex:1;min-width:0">
+                            <div style="font-size:12px;font-weight:600;color:var(--text)">Debit Note — ใบเพิ่มหนี้</div>
+                            <div id="dbn-name" style="font-size:10px;color:var(--text3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">ยังไม่ได้เลือกไฟล์</div>
+                        </div>
+                        <input type="file" id="xmlDBN" accept=".xml" style="display:none" onchange="markXMLNew(this,'dbn-name','DBN')">
+                        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('xmlDBN').click()">📁 Upload</button>
                     </div>
-                    <div style="border:2px dashed var(--border2);border-radius:10px;padding:20px 16px;text-align:center;cursor:pointer;transition:border-color .15s" onclick="triggerXML('rct')" onmouseenter="this.style.borderColor='var(--primary)'" onmouseleave="this.style.borderColor='var(--border2)'">
-                        <div style="font-size:24px;margin-bottom:6px">🧾</div>
-                        <div style="font-size:13px;font-weight:700;color:var(--text)">RCT</div>
-                        <div style="font-size:11px;color:var(--text3);margin-top:2px">ใบรับ</div>
-                        <input type="file" id="xmlRCT" accept=".xml" style="display:none" onchange="markXML(this,'rct-check')">
-                        <div id="rct-check" style="font-size:11px;color:var(--accent);margin-top:6px;min-height:16px"></div>
+                    <div style="display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:8px;padding:9px 12px">
+                        <span style="background:#8b5cf6;color:#fff;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;flex-shrink:0">CDN</span>
+                        <div style="flex:1;min-width:0">
+                            <div style="font-size:12px;font-weight:600;color:var(--text)">Credit Note — ใบลดหนี้</div>
+                            <div id="cdn-name" style="font-size:10px;color:var(--text3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">ยังไม่ได้เลือกไฟล์</div>
+                        </div>
+                        <input type="file" id="xmlCDN" accept=".xml" style="display:none" onchange="markXMLNew(this,'cdn-name','CDN')">
+                        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('xmlCDN').click()">📁 Upload</button>
                     </div>
+                    <div style="display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:8px;padding:9px 12px">
+                        <span style="background:#10b981;color:#fff;border-radius:4px;padding:2px 7px;font-size:11px;font-weight:700;flex-shrink:0">RCT</span>
+                        <div style="flex:1;min-width:0">
+                            <div style="font-size:12px;font-weight:600;color:var(--text)">Receipt — ใบรับ</div>
+                            <div id="rct-name" style="font-size:10px;color:var(--text3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">ยังไม่ได้เลือกไฟล์</div>
+                        </div>
+                        <input type="file" id="xmlRCT" accept=".xml" style="display:none" onchange="markXMLNew(this,'rct-name','RCT')">
+                        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('xmlRCT').click()">📁 Upload</button>
+                    </div>
+                </div>
+
+                <!-- Results Table -->
+                <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden">
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--bg2);border-bottom:1px solid var(--border)">
+                        <span style="font-size:12px;font-weight:600;color:var(--text)">ผลการส่ง XML</span>
+                        <div style="display:flex;gap:6px">
+                            <button class="btn btn-ghost btn-sm" onclick="refreshXMLResults()">🔄 Refresh</button>
+                            <button class="btn btn-ghost btn-sm" onclick="exportXMLResults()">⬇ Export</button>
+                        </div>
+                    </div>
+                    <div style="overflow-x:auto;max-height:200px;overflow-y:auto">
+                        <table style="width:100%;border-collapse:collapse;font-size:11px">
+                            <thead style="position:sticky;top:0;z-index:1">
+                                <tr style="background:var(--bg2);border-bottom:1px solid var(--border)">
+                                    <th style="padding:7px 8px;text-align:center;width:30px"><input type="checkbox" id="xmlSelectAll" onchange="toggleSelectAllXML(this)"></th>
+                                    <th style="padding:7px 8px;text-align:left;white-space:nowrap">Conversation ID</th>
+                                    <th style="padding:7px 8px;text-align:left;white-space:nowrap">Invoice ID</th>
+                                    <th style="padding:7px 8px;text-align:center;width:40px">Type</th>
+                                    <th style="padding:7px 8px;text-align:left">Status</th>
+                                    <th style="padding:7px 8px;text-align:center">Response</th>
+                                    <th style="padding:7px 8px;text-align:left;white-space:nowrap">Last Status Change</th>
+                                    <th style="padding:7px 8px;text-align:center">View</th>
+                                </tr>
+                            </thead>
+                            <tbody id="xmlResultBody">
+                                <tr><td colspan="8" style="text-align:center;padding:18px;color:var(--text3);font-size:11px">ยังไม่มีข้อมูล — อัปโหลดไฟล์และกด Submit เพื่อดูผล</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="form-row" style="flex-direction:column;gap:6px">
+                    <div style="display:flex;justify-content:space-between;align-items:center">
+                        <label style="margin:0">หมายเหตุ</label>
+                        <div style="display:flex;gap:6px">
+                            <button class="btn btn-ghost btn-sm" onclick="editStep(3)">✏ Edit</button>
+                            <button class="btn btn-success btn-sm" onclick="saveStep(3)">💾 Save</button>
+                        </div>
+                    </div>
+                    <textarea class="input input-readonly" id="cpaXMLNote" rows="2" placeholder="หมายเหตุ..." style="resize:vertical" readonly oninput="syncCPANote(this)"></textarea>
                 </div>
             </div>
             <div id="cpaStep3Footer" class="modal-footer" style="display:none">
@@ -5264,17 +5845,25 @@ navigate('application');
                 <div class="form-row"><label>Company <span style="color:var(--danger)">*</span></label>
                     <input class="input input-readonly" id="cpaPRODCompany" readonly>
                 </div>
-                <div class="form-row"><label>Certificate Path (.p12 / .pfx) <span style="color:var(--danger)">*</span></label>
-                    <input class="input" id="cpaPRODPath" placeholder="เช่น /certs/prod/company_prod.p12">
+                <div class="form-row"><label>Certificate (.xml) <span style="color:var(--danger)">*</span></label>
+                    <input class="input" id="cpaPRODPath" placeholder="เช่น /certs/prod/company_prod.xml">
                 </div>
-                <div class="form-row"><label>Certificate Password</label>
-                    <input class="input" id="cpaPRODPass" type="password" placeholder="••••••••">
+                <div class="form-row"><label>Certificate Location <span style="color:var(--danger)">*</span></label>
+                    <select class="select" id="cpaPRODLocation">
+                        <option value="">— Select Location —</option>
+                        <option value="Storage">Storage</option>
+                        <option value="AWS Secret Manager">AWS Secret Manager</option>
+                    </select>
                 </div>
-                <div class="form-row"><label>Expired Date <span style="color:var(--danger)">*</span></label>
-                    <input class="input" id="cpaPRODExpired" type="date">
-                </div>
-                <div class="form-row"><label>Provider</label>
-                    <input class="input input-readonly" id="cpaPRODProvider" readonly>
+                <div class="form-row" style="flex-direction:column;gap:6px">
+                    <div style="display:flex;justify-content:space-between;align-items:center">
+                        <label style="margin:0">หมายเหตุ</label>
+                        <div style="display:flex;gap:6px">
+                            <button class="btn btn-ghost btn-sm" onclick="editStep(4)">✏ Edit</button>
+                            <button class="btn btn-success btn-sm" onclick="saveStep(4)">💾 Save</button>
+                        </div>
+                    </div>
+                    <textarea class="input input-readonly" id="cpaPRODNote" rows="2" placeholder="หมายเหตุ..." style="resize:vertical" readonly oninput="syncCPANote(this)"></textarea>
                 </div>
             </div>
             <div id="cpaStep4Footer" class="modal-footer" style="display:none">
